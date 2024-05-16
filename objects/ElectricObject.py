@@ -1,5 +1,6 @@
 import numpy as np
 import sys
+from typing import Self
 
 sys.path.append("helper_functions/")
 sys.path.append("../helper_functions/")
@@ -61,7 +62,7 @@ class ElectricObject:
         )
         return details_string
 
-    def is_equal(self, other, simple_return: bool = True) -> bool | tuple:
+    def is_equal(self, other: Self, simple_return: bool = True) -> bool | tuple:
         """Compare two objects along many available variables. Needs to be updated/implemented in child classes.
 
         Args:
