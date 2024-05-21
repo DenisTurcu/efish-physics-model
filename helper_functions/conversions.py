@@ -17,12 +17,12 @@ def rho24sig(value: float | np.ndarray) -> float | np.ndarray:
     return 1 / value
 
 
-def convert2mainSI(value: tuple | float | np.ndarray) -> float | np.ndarray:
+def convert2mainSI(value: tuple | float | list | np.ndarray) -> float | np.ndarray:
     """Convert a given value to the main SI units. If a tuple is provided, the first element is
     the value and the rest are prefixes.
 
     Args:
-        value (tuple | float | np.ndarray): Value to be converted. If a tuple is provided, the first element
+        value (tuple | float | list | np.ndarray): Value to be converted. If a tuple is provided, the first element
             is the value and the rest are prefixes.
 
     Returns:

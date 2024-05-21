@@ -111,12 +111,17 @@ class ElectricObject:
                 print(argument)
         return self.arguments
 
-    def run_tests(self):
+    def run_tests(self) -> str:
+        """Run tests to ensure functionality of the object.
+
+        Returns:
+            str: "Success!" if all tests passed
+        """
         assert self.sig == self.get_conductivity(), "ElectricObject conductivity does not match."
         assert self.eps_r == self.get_relative_permittivity(), "ElectricObject permittivity does not match."
         return "Success!"
 
     @classmethod
     def _initialize_input_argument_names(cls):
-        """Keep track of the required input arguments required."""
+        """Keep track of the required input arguments."""
         return ["conductivity=1", "relative_permittivity=1"]

@@ -30,7 +30,8 @@ class Worm(ElectricObject):
             print(self.run_tests())
 
     def is_equal(self, other: Self, simple_return=True):
-        f"""Compare current worm to another worm for equality. Parrent __doc__:\n{super().is_equal.__doc__}"""
+        """Compare current worm to another worm for equality. Parrent __doc__:\n"""
+        Worm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -74,11 +75,15 @@ class Worm(ElectricObject):
 
     @classmethod
     def _initialize_input_argument_names(cls):
+        Worm._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
+
         inp_args = super()._initialize_input_argument_names()
         inp_args += ["center_position=[0,0,0]"]
         return inp_args
 
     def run_tests(self):
+        Worm.run_tests.__doc__ = super().run_tests.__doc__
+
         super().run_tests()
         assert (self.r_vec == self.get_position()).all(), "Worm position does not match."
         return "Success!"
