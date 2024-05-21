@@ -44,7 +44,7 @@ class Boundary:
         points = np.array(points)
         if (len(points.shape) == 1) and (points.shape[0] == 3):
             points = points.reshape(-1, 3)
-        assert points.shape[1] == 3, "Given points must be shape (N,3)."
+        assert points.shape[1] == 3, "Given points must be shape (N,3)."  # type: ignore
         if simple_return:
             return False
         else:
