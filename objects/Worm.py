@@ -52,7 +52,7 @@ class Worm(ElectricObject):
 
     def details(self) -> str:
         """Provides the details of the worm. Parent __doc__:\n"""
-        Worm.details.__doc__ += super().details.__doc__
+        Worm.details.__doc__ += super().details.__doc__  # type: ignore
 
         details_string = super().details()
         details_string += f"This worm has center position {self.r_vec}.\n"
@@ -76,7 +76,7 @@ class Worm(ElectricObject):
         return np.array([self.get_position()])
 
     @classmethod
-    def _initialize_input_argument_names(cls):
+    def _initialize_input_argument_names(cls) -> list[str]:
         Worm._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
 
         inp_args = super()._initialize_input_argument_names()

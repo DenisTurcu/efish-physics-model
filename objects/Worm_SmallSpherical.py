@@ -359,15 +359,15 @@ class SmallSphericalWorm(Worm):
         """Compare current worm to another worm for equality. Parent __doc__:\n"""
         SmallSphericalWorm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
-        _, thruth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
+        _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
-            thruth_values.append(np.abs(self.radius - other.get_radius()) < np.min([self.assert_err, other.assert_err]))
+            truth_values.append(np.abs(self.radius - other.get_radius()) < np.min([self.assert_err, other.assert_err]))
             comparison.append("radius")
-        thruth_value = False if len(thruth_values) == 0 else np.array(thruth_values).all()
+        truth_value = False if len(truth_values) == 0 else np.array(truth_values).all()
         if simple_return:
-            return thruth_value
+            return truth_value
         else:
-            return thruth_value, thruth_values, comparison
+            return truth_value, truth_values, comparison
 
     def details(self) -> str:
         """Provides the details of the small spherical worm. Parent __doc__:\n"""
@@ -386,7 +386,7 @@ class SmallSphericalWorm(Worm):
         return self.radius
 
     @classmethod
-    def _initialize_input_argument_names(cls):
+    def _initialize_input_argument_names(cls) -> list[str]:
         SmallSphericalWorm._initialize_input_argument_names.__func__.__doc__ = (
             super()._initialize_input_argument_names.__doc__
         )

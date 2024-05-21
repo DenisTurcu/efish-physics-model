@@ -122,6 +122,10 @@ class ElectricObject:
         return "Success!"
 
     @classmethod
-    def _initialize_input_argument_names(cls):
-        """Keep track of the required input arguments."""
+    def _initialize_input_argument_names(cls) -> list[str]:
+        """Keep track of the required input arguments.
+
+        Returns:
+            list[str]: List of input arguments.
+        """
         return ["conductivity=1", "relative_permittivity=1"]
