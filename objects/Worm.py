@@ -30,7 +30,7 @@ class Worm(ElectricObject):
             print(self.run_tests())
 
     def is_equal(self, other: Self, simple_return=True):
-        """Compare current worm to another worm for equality. Parrent __doc__:\n"""
+        """Compare current worm to another worm for equality. Parent __doc__:\n"""
         Worm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
@@ -50,8 +50,10 @@ class Worm(ElectricObject):
             'Need to implement the "create_graph_obj" function according to the geometry of the specified object. '
         )
 
-    def details(self):
-        """Provides the details of the worm. Can be adjusted in child classes to include more information."""
+    def details(self) -> str:
+        """Provides the details of the worm. Parent __doc__:\n"""
+        Worm.details.__doc__ += super().details.__doc__
+
         details_string = super().details()
         details_string += f"This worm has center position {self.r_vec}.\n"
         return details_string

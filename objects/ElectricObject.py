@@ -19,7 +19,7 @@ class ElectricObject:
     def __init__(
         self,
         conductivity: float | tuple | np.ndarray = 1,
-        relative_permittivity: float | tuple | np.ndarray = 1,
+        relative_permittivity: float | np.ndarray = 1,
         assert_err: float = 1e-12,
         _init_tests: bool = True,
     ):
@@ -29,8 +29,8 @@ class ElectricObject:
             conductivity (float | tuple | np.ndarray, optional): Electric conductivity value - can be float (make sure
                 it's in SI units), tuple (the first element is the value and the rest are prefixes), or np.ndarray
                 (values in SI units). Defaults to 1.
-            relative_permittivity (float | tuple | np.ndarray, optional): Relative permittivity "epsilon" - same
-                conditions as for "conductivity". Defaults to 1.
+            relative_permittivity (float | np.ndarray, optional): Relative permittivity "epsilon" - same
+                conditions as for "conductivity" (except "tuple" does not apply here). Defaults to 1.
             assert_err (float, optional): Assertion error value for what counts as "0" error. Defaults to 1e-12.
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
         """
