@@ -1,4 +1,5 @@
 import numpy as np
+from FishGeneration import FishGeneration
 import plotly.graph_objects as go  # type: ignore
 import time
 
@@ -51,7 +52,11 @@ class Fish(ElectricObject):
             eod_delay (float | tuple, optional): Delay of the EOD wave form that helps distribute EODs in time when
                 multiple fish are present in the aquarium. Defaults to (0, "").
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
+
+        Parent __doc__:\n
         """
+        Fish.__init__.__doc__ += super().__init__.__doc__  # type: ignore
+
         super().__init__(**kwds, _init_tests=False)
 
         # set an ID for this fish
@@ -231,7 +236,7 @@ class Fish(ElectricObject):
         """
         self.receptor_filters = new_receptor_filters
 
-    def is_equal(self, other, simple_return=True):
+    def is_equal(self, other, simple_return=True) -> bool | tuple:
         """Compare current fish to another fish for equality. Parent __doc__:\n"""
         Fish.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
@@ -246,7 +251,7 @@ class Fish(ElectricObject):
             comparison.append("skin_resistivity")
         truth_value = False if len(truth_values) == 0 else np.array(truth_values).all()
         if simple_return:
-            return truth_value
+            return truth_value  # type: ignore
         else:
             return truth_value, truth_values, comparison
 
@@ -606,7 +611,6 @@ class Fish(ElectricObject):
         return inp_args
 
     def run_tests(self):
-        """Sanity assertion checks to ensure code robustness."""
         Fish.run_tests.__doc__ = super().run_tests.__doc__
 
         super().run_tests()

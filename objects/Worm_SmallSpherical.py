@@ -40,7 +40,11 @@ class SmallSphericalWorm(Worm):
             derivative_filter (list, optional): Filter used to compute first derivative of a time series.
                 Defaults to [1 / 280, -4 / 105, 1 / 5, -4 / 5, 0, 4 / 5, -1 / 5, 4 / 105, -1 / 280].
             _init_tests (bool, optional): Whether to run initialization tests. Defaults to True.
+
+        Parent __doc__:\n
         """
+        SmallSphericalWorm.__init__.__doc__ += super().__init__.__doc__  # type: ignore
+
         super().__init__(**kwds, _init_tests=False)
         self.radius = convert2mainSI(radius)
         self.der_filt = derivative_filter
@@ -355,7 +359,7 @@ class SmallSphericalWorm(Worm):
         )
         return graph_obj
 
-    def is_equal(self, other, simple_return=True):
+    def is_equal(self, other, simple_return=True) -> bool | tuple:
         """Compare current worm to another worm for equality. Parent __doc__:\n"""
         SmallSphericalWorm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 

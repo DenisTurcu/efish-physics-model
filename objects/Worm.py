@@ -21,7 +21,11 @@ class Worm(ElectricObject):
             center_position (list | np.ndarray, optional): The center position of the worm in world coordinates.
                 Defaults to [0, 0, 0].
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
+
+        Parent __doc__:\n
         """
+        Worm.__init__.__doc__ += super().__init__.__doc__  # type: ignore
+
         super().__init__(**kwds, _init_tests=False)
         self.r_vec = np.array(convert2mainSI(center_position))  # type: ignore
         self._initialize_input_argument_names()
@@ -29,7 +33,7 @@ class Worm(ElectricObject):
         if _init_tests:
             print(self.run_tests())
 
-    def is_equal(self, other: Self, simple_return=True):
+    def is_equal(self, other: Self, simple_return=True) -> bool | tuple:
         """Compare current worm to another worm for equality. Parent __doc__:\n"""
         Worm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
@@ -41,7 +45,7 @@ class Worm(ElectricObject):
             comparison.append("center_position")
         truth_value = False if len(truth_values) == 0 else np.array(truth_values).all()
         if simple_return:
-            return truth_value
+            return truth_value  # type: ignore
         else:
             return truth_value, truth_values, comparison
 
