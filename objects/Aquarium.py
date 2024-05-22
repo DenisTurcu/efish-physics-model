@@ -1014,7 +1014,8 @@ class Aquarium(ElectricObject):
         super().run_tests()
 
         print(
-            "Testing Aquarium class... Testing fish and worm insertion and removal. Expect to see text that 'object already exists' and 'object does not exist'."
+            "Testing Aquarium class... Testing fish and worm insertion and removal. "
+            "Expect to see text that 'object already exists' and 'object does not exist'."
         )
 
         with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
