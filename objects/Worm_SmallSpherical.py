@@ -295,8 +295,8 @@ class SmallSphericalWorm(Worm):
             dipole_wave_form = self.dipole_waveform_single_fish(
                 wave_form=wave_form,
                 sig_water=aquarium_obj.get_conductivity(),
-                eps_r_water=aquarium_obj.get_relative_permitivity(),
-                sampling_frequency=fish.get_sampling_rate(),
+                eps_r_water=aquarium_obj.get_relative_permittivity(),
+                sampling_frequency=int(fish.get_sampling_rate()),
             )
 
             if return_potential:
@@ -339,7 +339,7 @@ class SmallSphericalWorm(Worm):
             self.C = convert2mainSI(capacitance)
         pass
 
-    def graph_obj(self, size_scale: float = 10, units_prefix: str = "") -> go.Scatter3d:
+    def create_graph_obj(self, size_scale: float = 10, units_prefix: str = "") -> go.Scatter3d:
         """Create a plotly graphical object to insert into a plot at a later time.
 
         Args:

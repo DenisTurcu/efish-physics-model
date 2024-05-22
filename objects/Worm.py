@@ -88,7 +88,7 @@ class Worm(ElectricObject):
         return inp_args
 
     def run_tests(self):
-        Worm.run_tests.__doc__ = super().run_tests.__doc__
+        
 
         super().run_tests()
         assert (self.r_vec == self.get_position()).all(), "Worm position does not match."
