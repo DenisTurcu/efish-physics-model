@@ -1,6 +1,6 @@
 import numpy as np
-from scipy.interpolate import interp1d, interp2d
-from scipy.optimize import brentq
+from scipy.interpolate import interp1d, interp2d  # type: ignore
+from scipy.optimize import brentq  # type: ignore
 
 
 def arc_cumulator(t, coords):
@@ -26,15 +26,14 @@ def arc_cumulator(t, coords):
     if np.all(t) is None:
         t = np.linspace(0, 1, coords.shape[-1])
 
-    assert t.shape == coords.shape[1:], \
-        "Need same number of parameters as coordinates"
+    assert t.shape == coords.shape[1:], "Need same number of parameters as coordinates"
     delta_s = np.linalg.norm(np.diff(coords), axis=0)
     cum_s = np.concatenate([[0], np.cumsum(delta_s)])
 
     return t, cum_s
 
 
-def r_arc_from_data(n, t, coords, interp=True, kind='linear'):
+def r_arc_from_data(n, t, coords, interp=True, kind="linear"):
     """
     Parameters
     ----------
@@ -113,7 +112,7 @@ def r_arc(n, func, t0, t1, precision=225):
     t = np.linspace(t0, t1, precision)
     coords = func(t)
 
-    rand_t, rand_s = r_arc_from_data(n, t, coords, interp=False)
+    rand_t, rand_s = r_arc_from_data(n, t, coords, interp=False)  # type: ignore
     rand_coords = func(rand_t)
 
     return rand_coords, rand_t, rand_s
@@ -147,7 +146,7 @@ def arc_length(func, t0, t1, precision=225):
     return length
 
 
-def sample_to_arc(sample, func, t0=0, precision=225, kind='linear', ub=1e11):
+def sample_to_arc(sample, func, t0=0, precision=225, kind="linear", ub=1e11):
     """
     Parameters
     ----------
@@ -222,7 +221,7 @@ def sample_to_arc(sample, func, t0=0, precision=225, kind='linear', ub=1e11):
         sample_t_pos = interp1d(arc_cum_s_pos, arc_t_pos, kind=kind)(sample_pos)
 
     # Recombine negative and positive components and evaluate function.
-    sample_t = np.empty_like(sample, dtype='float64')
+    sample_t = np.empty_like(sample, dtype="float64")
     sample_t[sign_idx] = sample_t_neg
     sample_t[~sign_idx] = sample_t_pos
     sample_x = func(sample_t)
@@ -256,14 +255,11 @@ def surface_cumulator(t, u, coords):
     """
 
     if np.all(t) is None:
-        t, _ = np.meshgrid(np.linspace(0, 1, coords.shape[-2]),
-                           np.linspace(0, 1, coords.shape[-1]))
+        t, _ = np.meshgrid(np.linspace(0, 1, coords.shape[-2]), np.linspace(0, 1, coords.shape[-1]))
     if np.all(u) is None:
-        _, u = np.meshgrid(np.linspace(0, 1, coords.shape[-2]),
-                           np.linspace(0, 1, coords.shape[-1]))
+        _, u = np.meshgrid(np.linspace(0, 1, coords.shape[-2]), np.linspace(0, 1, coords.shape[-1]))
 
-    assert t.shape == u.shape == coords.shape[1:], \
-        "Need same number of parameters as coordinates"
+    assert t.shape == u.shape == coords.shape[1:], "Need same number of parameters as coordinates"
     delta_t_temp = np.diff(coords, axis=2)
     delta_u_temp = np.diff(coords, axis=1)
 
@@ -271,8 +267,8 @@ def surface_cumulator(t, u, coords):
     delta_t = np.zeros(coords.shape)
     delta_u = np.zeros(coords.shape)
 
-    delta_t[:coords.shape[0], :coords.shape[1], 1:coords.shape[2]] = delta_t_temp
-    delta_u[:coords.shape[0], 1:coords.shape[1], :coords.shape[2]] = delta_u_temp
+    delta_t[: coords.shape[0], : coords.shape[1], 1 : coords.shape[2]] = delta_t_temp  # noqa E203
+    delta_u[: coords.shape[0], 1 : coords.shape[1], : coords.shape[2]] = delta_u_temp  # noqa E203
 
     # Area of each parallelogram
     delta_S = np.linalg.norm(np.cross(delta_t, delta_u, 0, 0), axis=2)
@@ -283,7 +279,7 @@ def surface_cumulator(t, u, coords):
     return t, u, cum_S_t, cum_S_u
 
 
-def r_surface_from_data(n, t, u, coords, interp=True, kind='linear', grid_like=False):
+def r_surface_from_data(n, t, u, coords, interp=True, kind="linear", grid_like=False):
     """
     Parameters
     ----------
@@ -323,9 +319,11 @@ def r_surface_from_data(n, t, u, coords, interp=True, kind='linear', grid_like=F
     t, u, cum_S_t, cum_S_u = surface_cumulator(t, u, coords)
 
     if grid_like:
-        points_S_t, points_S_u = np.meshgrid(np.linspace(0,cum_S_t[-1], grid_like['N_points_t']),
-                                             np.linspace(0,cum_S_u[-1], grid_like['N_points_u']))
-        N_points = grid_like['N_points_t'] * grid_like['N_points_u']
+        points_S_t, points_S_u = np.meshgrid(
+            np.linspace(0, cum_S_t[-1], grid_like["N_points_t"]),  # type: ignore
+            np.linspace(0, cum_S_u[-1], grid_like["N_points_u"]),  # type: ignore
+        )  # type: ignore
+        N_points = grid_like["N_points_t"] * grid_like["N_points_u"]  # type: ignore
     else:
         # Random values
         points_S_t = np.random.rand(n) * cum_S_t[-1]
@@ -386,11 +384,12 @@ def r_surface(n, func, t0, t1, u0, u1, t_precision=25, u_precision=25, grid_like
     Generates random points distributed uniformly over a parametric surface.
     """
 
-    t, u = np.meshgrid(np.linspace(t0, t1, t_precision),
-                       np.linspace(u0, u1, u_precision))
+    t, u = np.meshgrid(np.linspace(t0, t1, t_precision), np.linspace(u0, u1, u_precision))
     coords = func(t, u)
 
-    rand_t, rand_u, rand_S_t, rand_S_u = r_surface_from_data(n, t, u, coords, interp=False, grid_like=grid_like)
+    rand_t, rand_u, rand_S_t, rand_S_u = r_surface_from_data(  # type: ignore
+        n, t, u, coords, interp=False, grid_like=grid_like
+    )
     rand_coords = func(rand_t, rand_u)
 
     return rand_coords, rand_t, rand_u, rand_S_t, rand_S_u
