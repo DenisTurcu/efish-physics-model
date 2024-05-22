@@ -19,9 +19,9 @@ class SmallSphericalWorm(Worm):
 
     def __init__(
         self,
-        radius: float = 0.01,
-        resistance: float | None = None,
-        capacitance: float | None = None,
+        radius: float | tuple = 0.01,
+        resistance: float | tuple | None = None,
+        capacitance: float | tuple | tuple | None = None,
         derivative_filter: list = [1 / 280, -4 / 105, 1 / 5, -4 / 5, 0, 4 / 5, -1 / 5, 4 / 105, -1 / 280],
         _init_tests: bool = True,
         **kwds,
@@ -29,12 +29,12 @@ class SmallSphericalWorm(Worm):
         """Initialize the SmallSphericalWorm object.
 
         Args:
-            radius (float, optional): Radius if the worm (will be converted to SI, provide it accordingly).
+            radius (float | tuple, optional): Radius if the worm (will be converted to SI, provide it accordingly).
                 Defaults to 0.01.
-            resistance (float | None, optional): Resistance of the worm (will be converted to SI, provide it
+            resistance (float | tuple | None, optional): Resistance of the worm (will be converted to SI, provide it
                 accordingly). When "None", it will be inferred from electric properties (conductivity).
                 Defaults to None.
-            capacitance (float | None, optional): Capacitance or the worm (will be converted to SI, provide it
+            capacitance (float | tuple | None, optional): Capacitance or the worm (will be converted to SI, provide it
                 accordingly). When "None", it will be inferred from electric properties (relative permittivity).
                 Defaults to None.
             derivative_filter (list, optional): Filter used to compute first derivative of a time series.

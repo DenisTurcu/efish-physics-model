@@ -12,6 +12,7 @@ from prefixes import add_prefix  # noqa E402
 from conversions import convert2mainSI  # noqa E402
 from ElectricObject import ElectricObject  # noqa E402
 from Fish import Fish  # noqa E402
+from FishGeneration import FishGeneration  # noqa E402
 from Fish_IceCreamCone import IceCreamConeFish  # noqa E402
 from Worm import Worm  # noqa E402
 from Boundaries import Boundary, Plane  # noqa E402
@@ -111,10 +112,7 @@ class Aquarium(ElectricObject):
         if not image_currents:
             for o in obj_list:
                 if obj.is_equal(o):  # type: ignore
-                    print(
-                        f"Object already exists in the aquarium: {obj},"
-                        f"with details:\n{obj.details()}\n"  # type: ignore
-                    )
+                    print(f"Object already exists in the aquarium:\n-----\n{obj}-----\n")
                     return obj_list
         obj_list.append(obj)
         # update image currents if object is a fish
@@ -159,10 +157,7 @@ class Aquarium(ElectricObject):
                     if isinstance(obj, Fish):
                         self.update_image_currents(obj, mode="remove")
         if len(temp_obj_list) == len(obj_list):
-            print(
-                f"Object was not found in the aquarium: {obj},"
-                f"with details:\n{obj.details()}\n"  # type: ignore
-            )
+            print(f"Object was not found in the aquarium:\n-----\n{obj}-----\n")
         return temp_obj_list
 
     def empty_aquarium(self):
@@ -492,7 +487,7 @@ class Aquarium(ElectricObject):
         shown_time_prefix: str = "",
         range_points: int = 30,
         lengths_prefix: str = "",
-        show_fish: bool = False,
+        show_fish: int = 0,
         show_electric_signal: bool = False,
         show_normals: int = 0,
         show_point_currents: int = 0,
@@ -534,7 +529,8 @@ class Aquarium(ElectricObject):
                 the mesh-grid. Defaults to 30.
             lengths_prefix (str, optional): Prefixes of the spatial variables shown in the visualization,
                 e.g. "c" for centimeter. Defaults to "".
-            show_fish (bool, optional): Whether to show the fish receptors in the visualization. Defaults to False.
+            show_fish (int, optional): Whether to show the fish receptors in the visualization. Magnitude dictates
+                the size of the scatter marks. Defaults to 0.
             show_electric_signal (bool, optional): Whether to show the electric signal for all receptors in the
                 visualization. Defaults to False.
             show_normals (int, optional): Whether to show the normal direction to the skin surface of the fish for
@@ -577,7 +573,7 @@ class Aquarium(ElectricObject):
         for fish in self.fish_objs:
             points = np.vstack([points, fish.get_receptors_locations()])  # type: ignore
         for worm in self.worm_objs:
-            points = np.vstack([points, worm.get_receptors_locations()])  # type: ignore
+            points = np.vstack([points, worm.get_position()])  # type: ignore
         min_ranges = points.min(0)
         max_ranges = points.max(0)
         # del_ranges = max_ranges - min_ranges
@@ -811,6 +807,7 @@ class Aquarium(ElectricObject):
                             intensity=intensity,
                             intensity_range=intensity_range,
                             units_prefix=lengths_prefix,
+                            marker_size=show_fish,
                         )
                         frame_data.append(graph_obj)
 
@@ -1004,7 +1001,11 @@ class Aquarium(ElectricObject):
         Aquarium._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
 
         inp_args = super()._initialize_input_argument_names()
-        inp_args += ["fish_objs", "worm_objs", "boundaries"]
+        inp_args += [
+            "fish_objs=[]",
+            "worm_objs=[]",
+            "boundaries=[], {{e.g. [('plane', dict(normal=[0,0,1],central_point=[0,0,0]))]}}",
+        ]
         return inp_args
 
     def run_tests(self) -> str:
@@ -1012,8 +1013,14 @@ class Aquarium(ElectricObject):
 
         super().run_tests()
 
+        print(
+            "Testing Aquarium class... Testing fish and worm insertion and removal. Expect to see text that 'object already exists' and 'object does not exist'."
+        )
+
         with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
-            fish1 = Fish(nose_position=[0, 1, 0], fish_length=0.5, eod_wave_form=np.zeros(100), skin_resistivity=1)
+            fish1 = FishGeneration(
+                nose_position=[0, 1, 0], fish_length=0.5, eod_wave_form=np.zeros(100), skin_resistivity=1
+            )
             fish2 = IceCreamConeFish(
                 nose_position=[0, 0, 1],
                 fish_length=0.5,
@@ -1021,7 +1028,9 @@ class Aquarium(ElectricObject):
                 skin_resistivity=1,
                 receptors_init=dict(method="random", head=100, body=200),
             )
-            fish3 = Fish(nose_position=[1, 0, 0], fish_length=0.5, eod_wave_form=np.zeros(100), skin_resistivity=2)
+            fish3 = FishGeneration(
+                nose_position=[1, 0, 0], fish_length=0.5, eod_wave_form=np.zeros(100), skin_resistivity=2
+            )
             worm1 = Worm(center_position=[1, 2, 3])
             worm2 = Worm(center_position=[2, 1, 3])
             worm3 = Worm(center_position=[1, 3, 2])
@@ -1054,6 +1063,15 @@ class Aquarium(ElectricObject):
 
         self.insert_fish(fish1, _check_points=False)
         assert len(self.fish_objs) == N_fish + 2, "Inserting the same fish again should leave the list unchanged."
+        assert len(self.fish_objs) == len(
+            self.image_point_currents_magnitude
+        ), "Number of fish and number of sets of image point currents should match."
+        assert len(self.fish_objs) == len(
+            self.image_point_currents_location
+        ), "Number of fish and number of sets of image point currents should match."
+
+        self.remove_fish(fish3)
+        assert len(self.fish_objs) == N_fish + 2, "Removing non-existent fish should leave the list unchanged."
         assert len(self.fish_objs) == len(
             self.image_point_currents_magnitude
         ), "Number of fish and number of sets of image point currents should match."

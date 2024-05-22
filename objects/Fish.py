@@ -26,7 +26,7 @@ class Fish(ElectricObject):
         point_currents_magnitudes: np.ndarray = np.array([]).reshape(0),
         point_currents_locations: np.ndarray = np.array([]).reshape(0, 3),
         receptor_filters: np.ndarray = np.array([]).reshape(0, 1000),
-        eod_waveform: np.ndarray = np.arange(1000),
+        eod_wave_form: np.ndarray = np.arange(1000),
         skin_resistivity: float = 1,
         sampling_rate: float | tuple = (2.5, "M"),  # MHz
         eod_delay: float | tuple = (0, ""),  # s
@@ -46,7 +46,7 @@ class Fish(ElectricObject):
                 Defaults to np.array([]).reshape(0, 3).
             receptor_filters (np.ndarray, optional): Temporal convolutional filters for the receptors.
                 Defaults to np.array([]).reshape(0, 1000).
-            eod_waveform (np.ndarray, optional): Wave form of the EOD of the fish. Defaults to np.arange(1000).
+            eod_wave_form (np.ndarray, optional): Wave form of the EOD of the fish. Defaults to np.arange(1000).
             skin_resistivity (float, optional): Resistivity of the skin of the fish. Defaults to 1.
             sampling_rate (float | tuple, optional): Sampling rate of the EOD wave form. Defaults to (2.5, "M").
             eod_delay (float | tuple, optional): Delay of the EOD wave form that helps distribute EODs in time when
@@ -70,10 +70,10 @@ class Fish(ElectricObject):
 
         # initialize EOD related attributes
         self.sampling_rate = convert2mainSI(sampling_rate)
-        self.eod_waveform = eod_waveform
-        self.eod_length = eod_waveform.shape[0]
-        self.update_eod_waveform_and_delay(
-            eod_waveform=eod_waveform, sampling_rate=sampling_rate, eod_delay=eod_delay  # type: ignore
+        self.eod_wave_form = eod_wave_form
+        self.eod_length = eod_wave_form.shape[0]
+        self.update_eod_wave_form_and_delay(
+            eod_wave_form=eod_wave_form, sampling_rate=sampling_rate, eod_delay=eod_delay  # type: ignore
         )
 
         # electric related attributes
@@ -200,29 +200,29 @@ class Fish(ElectricObject):
         if (self.point_currents_magnitudes.shape[0] == 0) or (self.point_currents_locations.shape[0] == 0):
             print("Fish point currents were not properly initialized - some have 0 length.")
 
-    def update_eod_waveform_and_delay(
-        self, eod_waveform: np.ndarray | None = None, sampling_rate: float | None = None, eod_delay: float | None = None
+    def update_eod_wave_form_and_delay(
+        self, eod_wave_form: np.ndarray | None = None, sampling_rate: float | None = None, eod_delay: float | None = None
     ):
         """Update the EOD wave form of the fish and the delay of the EOD.
         Delay appends 0s at the beginning of the wave form.
 
         Args:
-            eod_waveform (np.ndarray | None, optional): New EOD wave form. Defaults to None.
+            eod_wave_form (np.ndarray | None, optional): New EOD wave form. Defaults to None.
             sampling_rate (float | None, optional): Sampling rate of the new EOD wave form. Defaults to None.
             eod_delay (float | None, optional): Delay of the new EOD wave form. Defaults to None.
         """
         self.sampling_rate = self.sampling_rate if sampling_rate is None else convert2mainSI(sampling_rate)
         self.eod_delay = 0 if eod_delay is None else convert2mainSI(eod_delay)
-        self.eod_waveform = (
-            self.eod_waveform[-self.eod_length :] if eod_waveform is None else eod_waveform  # noqa: E203
+        self.eod_wave_form = (
+            self.eod_wave_form[-self.eod_length :] if eod_wave_form is None else eod_wave_form  # noqa: E203
         )
-        self.eod_length = self.eod_length if eod_waveform is None else eod_waveform.shape[0]
-        self.eod_wave_max = np.array(self.eod_waveform).max()
+        self.eod_length = self.eod_length if eod_wave_form is None else eod_wave_form.shape[0]
+        self.eod_wave_max = np.array(self.eod_wave_form).max()
         # include the eod delay at the beginning of the wave-form
         self.eod_wave_form = np.hstack(
             [
                 np.zeros(np.int64(self.sampling_rate * self.eod_delay)),
-                np.array(self.eod_waveform) / (self.eod_wave_max if self.eod_wave_max > 0 else 1),
+                np.array(self.eod_wave_form) / (self.eod_wave_max if self.eod_wave_max > 0 else 1),
             ]
         )
         self.time_stamps = np.arange(self.eod_wave_form.shape[0]) / self.sampling_rate
@@ -603,7 +603,7 @@ class Fish(ElectricObject):
             "point_currents_magnitudes=np.array([]).reshape(0)",
             "point_currents_locations=np.array([]).reshape(0,3)",
             "receptor_filters=np.array([]).reshape(0,1000)",
-            "eod_waveform=np.arange(1000)",
+            "eod_wave_form=np.arange(1000)",
             "skin_resistivity=1",
             'sampling_rate=(2.5, "M"),  # MHz',
             "eod_delay=(0," "), # s",

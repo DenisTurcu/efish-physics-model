@@ -235,13 +235,13 @@ class FishGeneration(Fish):
         if receptors_init is None:
             locations, normals = self.receptors_locations.copy(), self.receptors_normals.copy()
         elif receptors_init["method"] == "random":
-            locations, normals = self.init_receptors_and_normals_random()
+            locations, normals = self.init_receptors_and_normals_random(receptors_init)  # type: ignore
         elif receptors_init["method"] == "grid":
-            locations, normals = self.init_receptors_and_normals_grid()
+            locations, normals = self.init_receptors_and_normals_grid(receptors_init)  # type: ignore
         elif receptors_init["method"] == "random_uniDense":
-            locations, normals = self.init_receptors_and_normals_random_uniDense()
+            locations, normals = self.init_receptors_and_normals_random_uniDense(receptors_init)  # type: ignore
         elif receptors_init["method"] == "grid_uniDense":
-            locations, normals = self.init_receptors_and_normals_grid_uniDense()
+            locations, normals = self.init_receptors_and_normals_grid_uniDense(receptors_init)  # type: ignore
         elif receptors_init["method"] == "manual":
             locations, normals = self.init_receptors_and_normals_manual(receptors_init)
         else:
