@@ -1,7 +1,7 @@
 import numpy as np
-from FishGeneration import FishGeneration
 import plotly.graph_objects as go  # type: ignore
 import time
+from typing import Self
 
 import sys
 
@@ -236,7 +236,7 @@ class Fish(ElectricObject):
         """
         self.receptor_filters = new_receptor_filters
 
-    def is_equal(self, other, simple_return=True) -> bool | tuple:
+    def is_equal(self, other: Self, simple_return: bool = True) -> bool | tuple:
         """Compare current fish to another fish for equality. Parent __doc__:\n"""
         Fish.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
@@ -481,7 +481,7 @@ class Fish(ElectricObject):
             "Triangulation visualization of fish not yet implemented - easier to export to Matlab..."
         )
 
-    def details(self):
+    def details(self) -> str:
         """Provides the details of the fish. Parent __doc__:\n"""
         Fish.details.__doc__ += super().details.__doc__  # type: ignore
 
@@ -610,7 +610,7 @@ class Fish(ElectricObject):
         ]
         return inp_args
 
-    def run_tests(self):
+    def run_tests(self) -> str:
         Fish.run_tests.__doc__ = super().run_tests.__doc__
 
         super().run_tests()

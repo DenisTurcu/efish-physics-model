@@ -359,9 +359,8 @@ class SmallSphericalWorm(Worm):
         )
         return graph_obj
 
-    def is_equal(self, other, simple_return=True) -> bool | tuple:
-        """Compare current worm to another worm for equality. Parent __doc__:\n"""
-        SmallSphericalWorm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
+    def is_equal(self, other: Worm, simple_return: bool = True) -> bool | tuple:
+        SmallSphericalWorm.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -369,7 +368,7 @@ class SmallSphericalWorm(Worm):
             comparison.append("radius")
         truth_value = False if len(truth_values) == 0 else np.array(truth_values).all()
         if simple_return:
-            return truth_value
+            return truth_value  # type: ignore
         else:
             return truth_value, truth_values, comparison
 

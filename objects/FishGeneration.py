@@ -57,7 +57,7 @@ class FishGeneration(Fish):
         assert N_point_currents >= 2, "At least two point currents must exist. "
 
         # position related attributes
-        self.nose_position = np.array(convert2mainSI(nose_position))
+        self.nose_position = convert2mainSI(nose_position)
         self.length = convert2mainSI(fish_length)
 
         # Fish Receptors
@@ -393,8 +393,8 @@ class FishGeneration(Fish):
         self.main_rotation = R.from_euler("zyx", [-self.yaw, -self.pitch, -self.roll])
         pass
 
-    def is_equal(self, other, simple_return=True) -> bool | tuple:
-        FishGeneration.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
+    def is_equal(self, other: Fish, simple_return: bool = True) -> bool | tuple:
+        FishGeneration.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -415,8 +415,8 @@ class FishGeneration(Fish):
         else:
             return truth_value, truth_values, comparison
 
-    def details(self):
-        """Provides the details of the fish. Parent __doc__:\n"""
+    def details(self) -> str:
+        """Provides the details of the FishGeneration class. Parent __doc__:\n"""
         FishGeneration.details.__doc__ += super().details.__doc__  # type: ignore
 
         details_string = super().details()
@@ -442,7 +442,7 @@ class FishGeneration(Fish):
         Returns:
             np.ndarray
         """
-        return self.nose_position
+        return self.nose_position  # type: ignore
 
     def get_length(self) -> float | np.ndarray:
         """Extract the named property of the fish object (immutable).
@@ -501,7 +501,7 @@ class FishGeneration(Fish):
         return self.relative_bend_angle_dorso_ventral  # type: ignore
 
     @classmethod
-    def _initialize_input_argument_names(cls):
+    def _initialize_input_argument_names(cls) -> list[str]:
         FishGeneration._initialize_input_argument_names.__func__.__doc__ = (
             super()._initialize_input_argument_names.__doc__
         )
@@ -523,7 +523,7 @@ class FishGeneration(Fish):
         ]
         return inp_args
 
-    def run_tests(self):
+    def run_tests(self) -> str:
         FishGeneration.run_tests.__doc__ = super().run_tests.__doc__
 
         assert self.length == self.get_length(), "Fish length does not match."
@@ -531,6 +531,6 @@ class FishGeneration(Fish):
         assert self.pitch == self.get_pitch(), "Fish pitch does not match."
         assert self.roll == self.get_roll(), "Fish roll does not match."
 
-        assert (self.nose_position == self.get_nose_position()).all(), "Fish position does not match."
+        assert (self.nose_position == self.get_nose_position()).all(), "Fish position does not match."  # type: ignore
 
         return "Success!"

@@ -71,7 +71,7 @@ class ElectricObject:
                 includes all compared features and the comparison results for each compared feature. Defaults to True.
 
         Returns:
-            bool | tuple: Simple True/False comparison or detailed comparison.
+            bool | tuple: Simple True/False comparison or detailed comparison, i.e. tuple[all, individual, comparisons made].
         """
         truth_values = []
         comparison = []

@@ -33,7 +33,7 @@ class Worm(ElectricObject):
         if _init_tests:
             print(self.run_tests())
 
-    def is_equal(self, other: Self, simple_return=True) -> bool | tuple:
+    def is_equal(self, other: Self, simple_return: bool = True) -> bool | tuple:
         """Compare current worm to another worm for equality. Parent __doc__:\n"""
         Worm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
 
