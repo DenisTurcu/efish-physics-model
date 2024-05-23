@@ -385,7 +385,7 @@ class Fish(ElectricObject):
             cbar_N_ticks (int, optional): Number of ticks on the intensity colorbar. Defaults to 10.
 
         Returns:
-            go.Scatter3d: _description_
+            go.Scatter3d: Scatter plotly object to be inserted into a plot at a later time.
         """
         if intensity is None:
             colors = self.receptors_locations[:, 0]

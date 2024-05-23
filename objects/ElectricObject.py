@@ -71,7 +71,8 @@ class ElectricObject:
                 includes all compared features and the comparison results for each compared feature. Defaults to True.
 
         Returns:
-            bool | tuple: Simple True/False comparison or detailed comparison, i.e. tuple[all, individual, comparisons made].
+            bool | tuple: Simple True/False comparison or detailed comparison,
+                i.e. tuple[all, individual, comparisons made].
         """
         truth_values = []
         comparison = []
@@ -84,7 +85,7 @@ class ElectricObject:
                 < np.min([self.assert_err, other.assert_err])  # type: ignore
             )
             comparison.append("conductivity")
-            comparison.append("relative_permitivity")
+            comparison.append("relative_permittivity")
         truth_value = False if len(truth_values) == 0 else np.array(truth_values).all()
         if simple_return:
             return truth_value  # type: ignore

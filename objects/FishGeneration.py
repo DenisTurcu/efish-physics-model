@@ -28,26 +28,36 @@ class FishGeneration(Fish):
         point_currents_range_percentage: dict = dict(start=0, end=100),
         N_point_currents: int = 101,
         point_currents_magnitude_scale: float = 1,
-        receptors_init: dict = dict(method="random", head=100, body=200),
+        receptors_init: dict = dict(
+            method="manual", locations=np.array([]).reshape(0, 3), normals=np.array([]).reshape(0, 3)
+        ),
         _init_tests: bool = True,
         **kwds,
     ):
         """Initialize a basic Fish object.
 
         Args:
-            nose_position (np.ndarray | list | tuple[np.ndarray, str], optional): _description_. Defaults to [0, 0, 0].
-            fish_length (float | tuple, optional): _description_. Defaults to 1.
-            angle_yaw (float | tuple, optional): _description_. Defaults to 0.
-            angle_pitch (float | tuple, optional): _description_. Defaults to 0.
-            angle_roll (float | tuple, optional): _description_. Defaults to 0.
-            relative_bend_locations_percentage (np.ndarray, optional): _description_. Defaults to np.array([]).
-            relative_bend_angle_lateral (np.ndarray | tuple[np.ndarray, str], optional): _description_. Defaults to (np.array([]), "deg").
-            relative_bend_angle_dorso_ventral (np.ndarray | tuple[np.ndarray, str], optional): _description_. Defaults to (np.array([]), "deg").
-            point_currents_range_percentage (dict, optional): _description_. Defaults to dict(start=0, end=100).
-            N_point_currents (int, optional): _description_. Defaults to 101.
-            point_currents_magnitude_scale (float, optional): _description_. Defaults to 1.
-            receptors_init (dict, optional): _description_. Defaults to dict(method="random", head=100, body=200).
-            _init_tests (bool, optional): _description_. Defaults to True.
+            nose_position (np.ndarray | list | tuple[np.ndarray, str], optional): Position of the tip of the fish,
+                called nose here. Defaults to [0, 0, 0].
+            fish_length (float | tuple, optional): The length of the fish. Defaults to 1.
+            angle_yaw (float | tuple, optional): The yaw angle position of the fish. Defaults to 0.
+            angle_pitch (float | tuple, optional): The pitch angle position of the fish. Defaults to 0.
+            angle_roll (float | tuple, optional): The roll angle position of the fish. Defaults to 0.
+            relative_bend_locations_percentage (np.ndarray, optional): Locations of fish tail bends, as percentage of
+                fish length. Defaults to np.array([]).
+            relative_bend_angle_lateral (np.ndarray | tuple[np.ndarray, str], optional): Lateral bend angles at each
+                bend location provided. Defaults to (np.array([]), "deg").
+            relative_bend_angle_dorso_ventral (np.ndarray | tuple[np.ndarray, str], optional): Vertical (dorso-ventral)
+                bend angles at each bend location provided. Defaults to (np.array([]), "deg").
+            point_currents_range_percentage (dict, optional): Range of locations for the point currents, as percentage
+                of fish length. Defaults to dict(start=0, end=100).
+            N_point_currents (int, optional): Number of point currents to simulate. Defaults to 101.
+            point_currents_magnitude_scale (float, optional): Magnitude scale of point currents. This can help adjust
+                measurements with real collected data from a tank. Defaults to 1.
+            receptors_init (dict, optional): Receptors initialization dict.
+                Defaults to dict(method="manual", locations=np.array([]).reshape(0, 3),
+                    normals=np.array([]).reshape(0, 3)).
+            _init_tests (bool, optional): Run init tests or not. Defaults to True.
 
         Parent __doc__:\n
         """
@@ -274,7 +284,7 @@ class FishGeneration(Fish):
         """Initialize receptors and normals on grid, with uniform density, on the fish surface."""
         raise NotImplementedError("Function not yet implemented.")
 
-    def init_receptors_and_normals_manual(self, receptors_and_normals_dict: dict) -> tuple[np.ndarray, np.ndarray]:
+    def init_receptors_and_normals_manual(self, receptors_init: dict) -> tuple[np.ndarray, np.ndarray]:
         """Initialize points and normals from manually given points and normals.
         Consider straight fish with tail at (0,0,0) and head on the +x axis.
 
@@ -285,8 +295,8 @@ class FishGeneration(Fish):
         Returns:
             tuple[np.ndarray, np.ndarray]: Tuple containing the transformed locations and normals.
         """
-        locations = receptors_and_normals_dict["points"].copy()
-        normals = receptors_and_normals_dict["normals"].copy()
+        locations = receptors_init["locations"].copy()
+        normals = receptors_init["normals"].copy()
         normals = normals / np.linalg.norm(normals, axis=1, keepdims=True)
         assert locations.shape[1] == 3, "Fish points should be shape (N,3)."
         assert normals.shape[1] == 3, "Fish normals should be shape (N,3)."
@@ -364,7 +374,9 @@ class FishGeneration(Fish):
         ), "Number of bend points must match number of dorso-ventral bend angles."
 
         self.relative_bend_locations_percentage = relative_bend_locations_percentage
-        self.bend_lengths = np.diff(self.relative_bend_locations_percentage, prepend=0, append=100) * self.length / 100
+        self.bend_lengths = (
+            np.diff(self.relative_bend_locations_percentage, prepend=0, append=100) * self.length / 100  # type: ignore
+        )
         assert (
             np.abs(self.bend_lengths.sum() - self.length) < self.assert_err
         ), "The bend lengths must sum to the total fish length."
