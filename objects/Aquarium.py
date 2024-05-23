@@ -504,7 +504,9 @@ class Aquarium(ElectricObject):
         xaxis_title: str = "X AXIS TITLE",
         yaxis_title: str = "Y AXIS TITLE",
         zaxis_title: str = "Z AXIS TITLE",
-    ):
+        fig_width: int = 800,
+        fig_height: int = 800,
+    ) -> go.Figure:
         """Visualize and aquarium with fish, worms, boundaries, electric potential and electric field.
         Can visualize
             - the electric signal on the fish
@@ -559,12 +561,17 @@ class Aquarium(ElectricObject):
             xaxis_title (str, optional): Axes label. Defaults to "X AXIS TITLE".
             yaxis_title (str, optional): Axes label. Defaults to "Y AXIS TITLE".
             zaxis_title (str, optional): Axes label. Defaults to "Z AXIS TITLE".
+            fig_width (int, optional): Respective figure dimension (px). Defaults to 800.
+            fig_height (int, optional): Respective figure dimension (px). Defaults to 800.
 
         Raises:
             ValueError: If "time_points" is not of the correct type (int, list or tuple).
             NotImplementedError: If boundary visualization is requested - boundary visualization not yet implemented.
             ValueError: If not enough frames to visualize - "time_points" should be chosen such that at least one
                 frame is created.
+
+        Returns:
+            go.Figure: Figure object for the visualization.
         """
         start_time = time.time()
         ########################################################################
@@ -665,7 +672,7 @@ class Aquarium(ElectricObject):
                 potential_abs[potential_abs > percentile_potential] = percentile_potential
                 potential_final = potential_abs * np.sign(potential)
                 # color scale for plotting
-                potential_color_bound = np.max(np.abs([potential.min(), potential.max()]))
+                potential_color_bound = np.max(np.abs([potential_final.min(), potential_final.max()]))
 
             if show_field:
                 E_field_norm = np.linalg.norm(E_field, 1)  # type: ignore
@@ -718,8 +725,8 @@ class Aquarium(ElectricObject):
                     y=add_prefix(Y, lengths_prefix),
                     z=add_prefix(Z, lengths_prefix),
                     value=potential_final[:, i],
-                    opacity=0.1,
-                    surface_count=40,
+                    opacity=0.3,
+                    surface_count=10,
                     showscale=False,
                     colorscale="Picnic",
                     showlegend=False,
@@ -913,14 +920,14 @@ class Aquarium(ElectricObject):
                     z=(max_ranges[2] - min_ranges[2]) / (max_ranges[0] - min_ranges[0]),
                 ),
             ),
-            width=None,
-            height=None,
+            width=fig_width,
+            height=fig_height,
             margin=dict(r=0, l=0, b=0, t=0),
         )
 
         fig.show()
         print(f"PLOTTING TIME: {time.time() - end_time:.1f} s.")
-        pass
+        return fig
 
     def create_image_currents_graph_obj(
         self, id_fish: int, marker_size: int = 15, units_prefix: str = ""

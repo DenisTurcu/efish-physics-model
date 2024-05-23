@@ -355,7 +355,7 @@ class SmallSphericalWorm(Worm):
             z=[add_prefix(self.r_vec[2], units_prefix)],
             showlegend=False,
             mode="markers",
-            marker=dict(size=self.radius * size_scale, color="pink", opacity=0.9),
+            marker=dict(size=self.radius * size_scale, color="brown", opacity=0.9),
         )
         return graph_obj
 

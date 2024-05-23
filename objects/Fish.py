@@ -283,8 +283,8 @@ class Fish(ElectricObject):
             marker_size (int, optional):  Size of the scatter points that represent the fish receptors. Defaults to 10.
             marker_alpha (float, optional): Transparency of the scatter points. Defaults to 0.8.
             color_map (str, optional): Colormap for intensity visualization. Defaults to "Viridis".
-            fig_width (float | None, optional): Figure width (inches?). Defaults to None.
-            fig_height (float | None, optional): Figure height (inches?). Defaults to None.
+            fig_width (float | None, optional): Figure width (px). Defaults to None.
+            fig_height (float | None, optional): Figure height (px). Defaults to None.
             units_prefix (str, optional): Length prefixes to use for the (xyz)-axis labels. Defaults to "m".
             xaxis_title (str, optional): Label of the x-axis. Defaults to "X AXIS TITLE".
             yaxis_title (str, optional): Label of the y-axis. Defaults to "Y AXIS TITLE".
