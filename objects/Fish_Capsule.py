@@ -248,7 +248,8 @@ class CapsuleFish(IceCreamConeFish):
             (np.power(normals, 2).sum(1) - 1) < self.assert_err
         ).all(), "Fish normals should be unit length vectors."
 
-        # translate the fish: after below line, the fish will be straight along x axis; tail is at [0,0,0] and nose is at [self.length,0,0]
+        # translate the fish: after below line, the fish will be straight along x axis; tail is at [0,0,0]
+        # and nose is at [self.length,0,0]
         locations[:, 0] += self.length - self.roc_ax
         assert locations[:, 0].min() >= 0, "Fish should currently be positioned in the positive x semi-space"
 

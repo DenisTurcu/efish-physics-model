@@ -286,7 +286,7 @@ class SmallSphericalWorm(Worm):
 
             potential_perturbation, E_perturbation = self.perturbation_magnitude_single_fish(
                 receptor_locs=receptor_locs,
-                E_field=E_field,
+                E_field=E_field,  # type: ignore
                 return_potential=return_potential,
                 return_field=return_field,
                 include_radius_factor=True,
