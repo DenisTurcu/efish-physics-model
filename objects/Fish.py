@@ -201,7 +201,10 @@ class Fish(ElectricObject):
             print("Fish point currents were not properly initialized - some have 0 length.")
 
     def update_eod_wave_form_and_delay(
-        self, eod_wave_form: np.ndarray | None = None, sampling_rate: float | None = None, eod_delay: float | None = None
+        self,
+        eod_wave_form: np.ndarray | None = None,
+        sampling_rate: float | None = None,
+        eod_delay: float | None = None,
     ):
         """Update the EOD wave form of the fish and the delay of the EOD.
         Delay appends 0s at the beginning of the wave form.
