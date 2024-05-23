@@ -21,7 +21,7 @@ class SmallSphericalWorm(Worm):
         self,
         radius: float | tuple = 0.01,
         resistance: float | tuple | None = None,
-        capacitance: float | tuple | tuple | None = None,
+        capacitance: float | tuple | None = None,
         derivative_filter: list = [1 / 280, -4 / 105, 1 / 5, -4 / 5, 0, 4 / 5, -1 / 5, 4 / 105, -1 / 280],
         _init_tests: bool = True,
         **kwds,
@@ -318,13 +318,13 @@ class SmallSphericalWorm(Worm):
 
         return potential_perturbation_total, E_perturbation_total
 
-    def initiate_electrical_properties(self, resistance: float | None, capacitance: float | None):
+    def initiate_electrical_properties(self, resistance: float | tuple | None, capacitance: float | tuple | None):
         """Parse electric properties of the worm.
 
         Args:
-            resistance (float | None): Resistance of the worm (will be converted to SI, provide it accordingly).
+            resistance (float | tuple | None): Resistance of the worm (will be converted to SI, provide it accordingly).
                 When "None", it will be inferred from conductivity.
-            capacitance (float | None, optional): Capacitance or the worm (will be converted to SI, provide it
+            capacitance (float | tuple | None, optional): Capacitance or the worm (will be converted to SI, provide it
                 accordingly). When "None", it will be inferred from relative permittivity.
         """
         if resistance is None:

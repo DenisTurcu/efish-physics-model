@@ -75,7 +75,7 @@ class CapsuleFish(IceCreamConeFish):
             super().init_receptors_and_normals_random.__doc__  # type: ignore
         )
         # HEAD POINTS
-        # construct unit radius hemi-sphere with base on zy plane
+        # construct unit radius semi-sphere with base on zy plane
         head_points_2D = np.random.rand(int(1.5 * receptors_init["head"]), 2) * 2 - 1
         head_points_2D = head_points_2D[np.power(head_points_2D, 2).sum(1) < 1]
         head_points_2D = head_points_2D[: receptors_init["head"]]
@@ -89,7 +89,7 @@ class CapsuleFish(IceCreamConeFish):
         head_normals = head_normals / np.linalg.norm(head_normals, axis=1, keepdims=True)
 
         # TAIL POINTS
-        # construct unit radius hemi-sphere with base on zy plane
+        # construct unit radius semi-sphere with base on zy plane
         tail_points_2D = np.random.rand(int(1.5 * receptors_init["tail"]), 2) * 2 - 1
         tail_points_2D = tail_points_2D[np.power(tail_points_2D, 2).sum(1) < 1]
         tail_points_2D = tail_points_2D[: receptors_init["tail"]]
