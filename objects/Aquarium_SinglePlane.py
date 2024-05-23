@@ -48,7 +48,8 @@ class SinglePlaneAquarium(Aquarium):
         pass
 
     def compute_image_point_currents(self, fish: Fish) -> tuple[np.ndarray, np.ndarray]:
-        """_summary_
+        """Image points for a single planar boundary are computed by reflecting the fish point currents with respect
+        the boundary.
 
         Args:
             fish (Fish): Fish for which image point currents are computed.
