@@ -320,4 +320,4 @@ Not yet implemented
 ### Spherical
 Not yet implemented
 
-Disclaimer: Writing this README file has been aided by Github Copilot.
+Disclaimer: Writing this README file has been aided by GitHub Copilot.
