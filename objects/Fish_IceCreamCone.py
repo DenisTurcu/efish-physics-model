@@ -16,7 +16,7 @@ class IceCreamConeFish(FishGeneration):
 
     def __init__(
         self,
-        vertical_semi_axis: float | tuple = 0.1,
+        vertical_semi_axis: float | tuple = 1e-3,
         lateral_semi_axis: float | tuple | None = None,
         rostrocaudal_semi_axis: float | tuple | None = None,
         _init_tests: bool = True,

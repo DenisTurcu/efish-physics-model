@@ -52,7 +52,7 @@ for i in range(len(sys.argv)):
     print('Processing %s...' % data_file_name)
 
     generate_receptors_responses(
-        save_file_name=data_params_dict['save_file_name'],
+        save_name=data_params_dict['save_file_name'],
         # aquarium properties
         water_conductivities=data_params_dict['water_conductivities'],
         boundary_displacements=data_params_dict['boundary_displacements'],
