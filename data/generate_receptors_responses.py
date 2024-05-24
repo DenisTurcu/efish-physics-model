@@ -137,9 +137,9 @@ def generate_receptors_responses(
     dataset["fish"]["bend_angle_lateral"] = fish_bend_angle_lateral_deg
     dataset["fish"]["bend_angle_dorso_ventral"] = fish_bend_angle_dorso_ventral_deg
     dataset["fish"]["bend_location_percentages"] = fish_bend_location_percentages
-    dataset["fish"]["fish_yaw"] = fish_yaw_deg
-    dataset["fish"]["fish_pitch"] = fish_pitch_deg
-    dataset["fish"]["fish_roll"] = fish_roll_deg
+    dataset["fish"]["yaw"] = fish_yaw_deg
+    dataset["fish"]["pitch"] = fish_pitch_deg
+    dataset["fish"]["roll"] = fish_roll_deg
 
     # initialize the worms' properties
     dataset["worms"]["properties_dict"] = {
@@ -191,7 +191,7 @@ def generate_receptors_responses(
             aqua_objs.append(
                 Aquarium(
                     relative_permittivity=80,
-                    conductivity=dataset["aquarium"]["conductivity"][id_cond],
+                    conductivity=dataset["aquarium"]["conductivities"][id_cond],
                     _init_tests=False,
                 )
             )
@@ -201,7 +201,7 @@ def generate_receptors_responses(
             aqua_objs.append(
                 SinglePlaneAquarium(
                     relative_permittivity=80,
-                    conductivity=dataset["aquarium"]["conductivity"][id_cond],
+                    conductivity=dataset["aquarium"]["conductivities"][id_cond],
                     boundaries=[("plane", dict(normal=temp_normal, central_point=temp_central_point))],
                     _init_tests=False,
                 )
@@ -215,9 +215,9 @@ def generate_receptors_responses(
             for i2, temp2 in enumerate(dataset["fish"]["bend_location_percentages"]):
                 # can only simulated fish for which the bend angles and locations have the same lengths
                 if (len(temp0) == len(temp1)) and (len(temp1) == len(temp2)):
-                    for i3 in range(len(dataset["fish"]["fish_yaw"])):
-                        for i4 in range(len(dataset["fish"]["fish_pitch"])):
-                            for i5 in range(len(dataset["fish"]["fish_roll"])):
+                    for i3 in range(len(dataset["fish"]["yaw"])):
+                        for i4 in range(len(dataset["fish"]["pitch"])):
+                            for i5 in range(len(dataset["fish"]["roll"])):
                                 dataset["fish"]["dataframe"] = pd.concat(
                                     [
                                         dataset["fish"]["dataframe"],
@@ -247,14 +247,14 @@ def generate_receptors_responses(
         id_lat = row["bend_angle_lateral"]
         id_dve = row["bend_angle_dorso_ventral"]
         id_loc = row["bend_location_percentages"]
-        id_yaw = row["fish_yaw"]
-        id_pit = row["fish_pitch"]
-        id_rol = row["fish_roll"]
+        id_yaw = row["yaw"]
+        id_pit = row["pitch"]
+        id_rol = row["roll"]
         temp_fish.update_parameters(
             nose_position=None,
-            angle_yaw=(dataset["fish"]["fish_yaw"][id_yaw], "deg"),
-            angle_pitch=(dataset["fish"]["fish_pitch"][id_pit], "deg"),
-            angle_roll=(dataset["fish"]["fish_roll"][id_rol], "deg"),
+            angle_yaw=(dataset["fish"]["yaw"][id_yaw], "deg"),
+            angle_pitch=(dataset["fish"]["pitch"][id_pit], "deg"),
+            angle_roll=(dataset["fish"]["roll"][id_rol], "deg"),
             relative_bend_locations_percentage=np.array(dataset["fish"]["bend_location_percentages"][id_loc]),
             relative_bend_angle_lateral=(np.array(dataset["fish"]["bend_angle_lateral"][id_lat]), "deg"),
             relative_bend_angle_dorso_ventral=(np.array(dataset["fish"]["bend_angle_dorso_ventral"][id_dve]), "deg"),
@@ -312,8 +312,8 @@ def generate_receptors_responses(
     dataset["worms"]["dataframe"]["objs"] = worm_objs
     end_time = time.time()
     print(f"Time to prepare dataset: {end_time - start_time:.3f} s")
-    print("Total aquarium-fish pairs: %d" % (len(dataset["fish"]["fish_objs"]) * len(dataset["aquarium"]["aqua_objs"])))
-    print("Total worms: %d" % len(dataset["worms"]["worm_objs"]))
+    print("Total aquarium-fish pairs: %d" % (len(dataset["fish"]["dataframe"]) * len(dataset["aquarium"]["dataframe"])))
+    print("Total worms: %d" % len(dataset["worms"]["dataframe"]))
 
     ############################################################################################################
     # Compute electric images for every aquarium-fish-worm grouping ############################################
@@ -366,7 +366,7 @@ def generate_receptors_responses(
         id_sig_water = aqua_row["conductivities"]
         for fish_id, fish_row in dataset["fish"]["dataframe"].iterrows():
             keeper_id += 1
-            print(f"ID: {keeper_id}.", end=" ")
+            print(f"ID: {str(keeper_id).rjust(3)}.", end=" ")
             fish = fish_row["objs"]
             start_time = time.time()
             start_time_HDF5_save = start_time
@@ -483,7 +483,8 @@ def generate_receptors_responses(
                 # below is equivalent)
                 # pert_receptors_responses = fish.compute_receptors_responses(pert_transdermal_signal)
                 pert_receptors_responses = torch.inner(
-                    pert_transdermal_signal[:, -fish.get_EOD_length() :], fish.get_receptors_filters()  # noqa E203
+                    pert_transdermal_signal[:, -fish.get_EOD_length() :],  # noqa E203
+                    torch.tensor(fish.get_receptors_filters()).to(device),
                 )
                 # convert back to numpy for storage purposes
                 pert_transdermal_signal = pert_transdermal_signal.cpu().numpy()
@@ -558,7 +559,7 @@ def generate_receptors_responses(
                 "Estimated time remaining: "
                 f"{estimated_time_remaining // 3600} h "
                 f"{estimated_time_remaining % 3600 // 60} min "
-                f"{estimated_time_remaining % 60:.2f} s"
+                f"{estimated_time_remaining % 60:.2f} s. "
                 "Estimated datetime finished: "
                 f"{estimated_datetime_finished.strftime('%Y_%m_%d-T-%H:%M:%S')}"
             )
@@ -597,7 +598,6 @@ if __name__ == "__main__":
     save_LEODs = True
     for fname in sys.argv[1:]:
         data_params_dict = dill.load(open(fname, "rb"))
-        print(data_params_dict["save_name"])
+        print(f"Dataset name: {data_params_dict['save_name']}")
         generate_receptors_responses(save_LEODs=save_LEODs, **data_params_dict)
-        print()
         print()
