@@ -126,9 +126,9 @@ class FishGeneration(Fish):
     def update_parameters(
         self,
         nose_position: np.ndarray | list | None = None,
-        angle_yaw: float | np.ndarray | None = None,
-        angle_pitch: float | np.ndarray | None = None,
-        angle_roll: float | np.ndarray | None = None,
+        angle_yaw: float | np.ndarray | tuple[float | np.ndarray, str] | None = None,
+        angle_pitch: float | np.ndarray | tuple[float | np.ndarray, str] | None = None,
+        angle_roll: float | np.ndarray | tuple[float | np.ndarray, str] | None = None,
         relative_bend_locations_percentage: np.ndarray | None = None,
         relative_bend_angle_lateral: np.ndarray | tuple[np.ndarray, str] | None = None,
         relative_bend_angle_dorso_ventral: np.ndarray | tuple[np.ndarray, str] | None = None,
@@ -140,9 +140,12 @@ class FishGeneration(Fish):
 
         Args:
             nose_position (np.ndarray | list | None, optional): New value to update, if provided. Defaults to None.
-            angle_yaw (float | np.ndarray | None, optional): New value to update, if provided. Defaults to None.
-            angle_pitch (float | np.ndarray | None, optional): New value to update, if provided. Defaults to None.
-            angle_roll (float | np.ndarray | None, optional): New value to update, if provided. Defaults to None.
+            angle_yaw (float | np.ndarray | tuple[float | np.ndarray, str] | None, optional): New value to update,
+                if provided. Defaults to None.
+            angle_pitch (float | np.ndarray | tuple[float | np.ndarray, str] | None, optional): New value to update,
+                if provided. Defaults to None.
+            angle_roll (float | np.ndarray | tuple[float | np.ndarray, str] | None, optional): New value to update,
+                if provided. Defaults to None.
             relative_bend_locations_percentage (np.ndarray | None, optional): New value to update, if provided.
                 Defaults to None.
             relative_bend_angle_lateral (np.ndarray | tuple[np.ndarray, str] | None, optional): New value to update,
@@ -402,7 +405,7 @@ class FishGeneration(Fish):
     def initialize_main_rotation(self):
         """Initialize the rotation objects corresponding to overall rotation.
         Note '-' sign convention for all angles."""
-        self.main_rotation = R.from_euler("zyx", [-self.yaw, -self.pitch, -self.roll])
+        self.main_rotation = R.from_euler("zyx", [-self.yaw, -self.pitch, -self.roll])  # type: ignore
         pass
 
     def is_equal(self, other: Fish, simple_return: bool = True) -> bool | tuple:

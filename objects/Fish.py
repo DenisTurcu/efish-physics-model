@@ -595,6 +595,15 @@ class Fish(ElectricObject):
         """
         return self.receptor_filters.shape[0]
 
+    def get_EOD_length(self) -> int:
+        """Extract the named property of the fish object (immutable).
+        Refers to the length of the EOD wave form in number of timestamps (not real time)..
+
+        Returns:
+            int
+        """
+        return self.eod_length
+
     @classmethod
     def _initialize_input_argument_names(cls) -> list[str]:
         Fish._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__

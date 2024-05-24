@@ -853,11 +853,11 @@ class Aquarium(ElectricObject):
                     "y": 0,
                     "steps": [
                         {
-                            "args": [[f.name], frame_args(0)],
-                            "label": f.name,
+                            "args": [[frm.name], frame_args(0)],  # type: ignore
+                            "label": frm.name,  # type: ignore
                             "method": "animate",
                         }
-                        for k, f in enumerate(fig.frames)
+                        for frm in fig.frames
                     ],
                 }
             ]
