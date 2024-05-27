@@ -337,7 +337,7 @@ def generate_receptors_responses(
     num_responses = 0  # id that keeps track of the number of responses computed (base and pert)
     with h5py.File(f"{save_folder}/{save_name}/responses.hdf5", "w") as f:
         f.create_dataset(
-            "pert_EI",
+            "responses",
             (
                 len(dataset["fish"]["dataframe"])
                 * len(dataset["aquarium"]["dataframe"])
@@ -350,7 +350,7 @@ def generate_receptors_responses(
     if save_LEODs:
         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "w") as f:
             f.create_dataset(
-                "pert_LEODs",
+                "localEODs",
                 (
                     len(dataset["fish"]["dataframe"])
                     * len(dataset["aquarium"]["dataframe"])
@@ -525,14 +525,14 @@ def generate_receptors_responses(
 
                 if (count_pert_EI % HDF5_save_period) == 0:
                     with h5py.File(f"{save_folder}/{save_name}/responses.hdf5", "r+") as f:
-                        f["pert_EI"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
+                        f["responses"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
                             dataset_electric_images_pert_data
                         )
                     dataset_electric_images_pert_data = []
 
                     if save_LEODs:
                         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "r+") as f:
-                            f["pert_LEODs"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
+                            f["localEODs"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
                                 dataset_LEODs
                             )
                         dataset_LEODs = []
@@ -575,10 +575,10 @@ def generate_receptors_responses(
     if len(dataset_electric_images_pert_data) > 0:
         print(f"Saving {len(dataset_electric_images_pert_data)} additional EIs.", end=" ")
         with h5py.File(f"{save_folder}/{save_name}/responses.hdf5", "r+") as f:
-            f["pert_EI"][-len(dataset_electric_images_pert_data) :] = np.array(dataset_electric_images_pert_data)  # type: ignore # noqa E203
+            f["responses"][-len(dataset_electric_images_pert_data) :] = np.array(dataset_electric_images_pert_data)  # type: ignore # noqa E203
         if save_LEODs:
             with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "r+") as f:
-                f["pert_LEODs"][-len(dataset_LEODs) :] = np.array(dataset_LEODs)  # type: ignore # noqa E203
+                f["localEODs"][-len(dataset_LEODs) :] = np.array(dataset_LEODs)  # type: ignore # noqa E203
         end_time_HDF5_save = time.time()
         print(f"({end_time_HDF5_save - start_time_HDF5_save:.2f} s)")
 
@@ -595,9 +595,24 @@ def generate_receptors_responses(
 
 if __name__ == "__main__":
     print("Simulate data...")
-    save_LEODs = True
+
+    HDF5_save_period = 100000
+    HDF5_save_dtype = np.float32
+    save_LEODs = False
+    GPU = None
+    save_folder = "processed"
+    save_worm_objs = False
+
     for fname in sys.argv[1:]:
         data_params_dict = dill.load(open(fname, "rb"))
         print(f"Dataset name: {data_params_dict['save_name']}")
-        generate_receptors_responses(save_LEODs=save_LEODs, **data_params_dict)
+        generate_receptors_responses(
+            **data_params_dict,
+            save_LEODs=save_LEODs,
+            GPU=GPU,
+            save_folder=save_folder,
+            save_worm_objs=save_worm_objs,
+            HDF5_save_period=HDF5_save_period,
+            HDF5_save_dtype=HDF5_save_dtype,
+        )
         print()
