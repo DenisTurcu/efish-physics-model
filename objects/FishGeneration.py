@@ -59,9 +59,8 @@ class FishGeneration(Fish):
                     normals=np.array([]).reshape(0, 3)).
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
 
-        Parent __doc__:\n
+        See parent class "Fish" for more details.
         """
-        FishGeneration.__init__.__doc__ += Fish.__init__.__doc__  # type: ignore
 
         super().__init__(**kwds, _init_tests=False)
         assert N_point_currents >= 2, "At least two point currents must exist. "
@@ -96,11 +95,8 @@ class FishGeneration(Fish):
             print(self.run_tests())
 
     def update_receptors(self, receptors_locations=None, receptors_normals=None, base_receptors=True):
-        """Expands the parent class method to include whether to update the base receptors or not. Parent __doc__:\n"""
-        FishGeneration.update_receptors.__doc__ += Fish.update_receptors.__doc__  # type: ignore
-        FishGeneration.update_receptors.__doc__ += (
-            "\n" "   base_receptors (bool, optional): Whether to update the base receptors or not. Defaults to True.\n"
-        )
+        """Expands the parent class method to include whether to update the base receptors or not.
+        See parent class "Fish" for more details."""
 
         if base_receptors:
             self.base_receptors_locations = (
@@ -409,8 +405,6 @@ class FishGeneration(Fish):
         pass
 
     def is_equal(self, other: Fish, simple_return: bool = True) -> bool | tuple:
-        FishGeneration.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
-
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
             truth_values.append((np.abs(self.nose_position - other.get_nose_position()) < self.assert_err).all())
@@ -431,8 +425,7 @@ class FishGeneration(Fish):
             return truth_value, truth_values, comparison
 
     def details(self) -> str:
-        """Provides the details of the FishGeneration class. Parent __doc__:\n"""
-        FishGeneration.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the FishGeneration class. See parent class "Fish" for more details."""
 
         details_string = super().details()
         details_string += (
@@ -517,10 +510,6 @@ class FishGeneration(Fish):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list[str]:
-        FishGeneration._initialize_input_argument_names.__func__.__doc__ = (
-            super()._initialize_input_argument_names.__doc__
-        )
-
         inp_args = super()._initialize_input_argument_names()
         inp_args += [
             "nose_position=[0,0,0]",
@@ -539,8 +528,6 @@ class FishGeneration(Fish):
         return inp_args
 
     def run_tests(self) -> str:
-        FishGeneration.run_tests.__doc__ = super().run_tests.__doc__
-
         assert self.length == self.get_length(), "Fish length does not match."
         assert self.yaw == self.get_yaw(), "Fish yaw does not match."
         assert self.pitch == self.get_pitch(), "Fish pitch does not match."

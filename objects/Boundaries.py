@@ -72,8 +72,7 @@ class Plane(Boundary):
         self.type = "plane"
 
     def verify_points(self, points, simple_return=True):
-        """Verify points for the specific "Plane" boundary. Parent __doc__:\n"""
-        Plane.verify_points.__doc__ += super().verify_points.__doc__  # type: ignore
+        """Verify points for the specific "Plane" boundary. See parent class "Boundary" for more details."""
 
         _, points = super().verify_points(points, simple_return=False)  # type: ignore
         if simple_return:
@@ -88,9 +87,7 @@ class Plane(Boundary):
 
 class Ellipsoid(Boundary):
     """Represents an ellipsoid boundary, defined by a three semi-axes and three rotation angles (Euler, zyx) and
-    a central point. Parent class "Boundary":"""
-
-    __doc__ += Boundary.__doc__  # type: ignore
+    a central point. See parent class "Boundary" for more details."""
 
     def __init__(
         self,
@@ -130,8 +127,7 @@ class Ellipsoid(Boundary):
         self.type = "ellipsoid"
 
     def verify_points(self, points, simple_return=True):
-        """Verify points for the specific "Ellipsoid" boundary. Parent __doc__:\n"""
-        Ellipsoid.verify_points.__doc__ += super().verify_points.__doc__  # type: ignore
+        """Verify points for the specific "Ellipsoid" boundary. See parent class "Boundary" for more details."""
 
         _, points = super().verify_points(points, simple_return=False)  # type: ignore
         # relative points w.r.t ellipsoid center
@@ -155,8 +151,8 @@ class Sphere(Ellipsoid):
     __doc__ += Ellipsoid.__doc__  # type: ignore
 
     def __init__(self, radius: float, **kwds):
-        """Same as "Ellipsoid", but with equal semi-axes and no rotations. Parent __doc__:\n"""
-        Sphere.__init__.__doc__ += super().__init__.__doc__  # type: ignore
+        """Same as "Ellipsoid", but with equal semi-axes and no rotations.
+        See parent class "Ellipsoid" for more details."""
 
         super().__init__(axis_x=radius, axis_y=radius, axis_z=radius, **kwds)  # type: ignore
         self.type = "sphere"

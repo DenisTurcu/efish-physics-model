@@ -41,9 +41,8 @@ class SmallSphericalWorm(Worm):
                 Defaults to [1 / 280, -4 / 105, 1 / 5, -4 / 5, 0, 4 / 5, -1 / 5, 4 / 105, -1 / 280].
             _init_tests (bool, optional): Whether to run initialization tests. Defaults to True.
 
-        Parent __doc__:\n
+        See parent class "Worm" for more details.
         """
-        SmallSphericalWorm.__init__.__doc__ += super().__init__.__doc__  # type: ignore
 
         super().__init__(**kwds, _init_tests=False)
         self.radius = convert2mainSI(radius)
@@ -174,9 +173,9 @@ class SmallSphericalWorm(Worm):
             wave_form_der_resampled = (
                 np.convolve(self.der_filt[::-1], wave_form_resampled, "same") * sampling_frequency * resolution_factor
             )
-            dipole_wave_form = np.zeros(wave_form_resampled.shape[0])
+            dipole_wave_form = np.zeros(wave_form_resampled.shape[0])  # type: ignore
             old_settings = np.seterr(over="ignore", invalid="ignore")
-            for j in range(1, wave_form_resampled.shape[0]):
+            for j in range(1, wave_form_resampled.shape[0]):  # type: ignore
                 dipole_wave_form[j] = dipole_wave_form[j - 1] + (
                     f0 * wave_form_resampled[j - 1] + f1 * wave_form_der_resampled[j - 1] - p0 * dipole_wave_form[j - 1]
                 ) / (p1 * sampling_frequency * resolution_factor)
@@ -360,7 +359,6 @@ class SmallSphericalWorm(Worm):
         return graph_obj
 
     def is_equal(self, other: Worm, simple_return: bool = True) -> bool | tuple:
-        SmallSphericalWorm.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -373,8 +371,7 @@ class SmallSphericalWorm(Worm):
             return truth_value, truth_values, comparison
 
     def details(self) -> str:
-        """Provides the details of the small spherical worm. Parent __doc__:\n"""
-        SmallSphericalWorm.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the small spherical worm. See parent class "Worm" for more details."""
 
         details_string = super().details()
         details_string += f"This worm type is small and spherical, with radius {self.radius}.\n"
@@ -390,10 +387,6 @@ class SmallSphericalWorm(Worm):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list[str]:
-        SmallSphericalWorm._initialize_input_argument_names.__func__.__doc__ = (
-            super()._initialize_input_argument_names.__doc__
-        )
-
         inp_args = super()._initialize_input_argument_names()
         inp_args += ["radius", "resistance", "capacitance"]
         return inp_args

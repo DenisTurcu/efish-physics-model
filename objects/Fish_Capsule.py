@@ -33,10 +33,8 @@ class CapsuleFish(IceCreamConeFish):
             rostrocaudal_semi_axis_tail (float | tuple | None, optional): Like "rostrocaudal_semi_axis", but for the
                 tail cap of the capsule. Defaults to None.
 
-        Parent __doc__:\n
+        See parent class "IceCreamConeFish" for more details.
         """
-        CapsuleFish.__init__.__doc__ += super().__init__.__doc__  # type: ignore
-
         super().__init__(**kwds, _init_tests=False, _super_init=True)
 
         # Fish TAIL Semi-Axes
@@ -55,8 +53,6 @@ class CapsuleFish(IceCreamConeFish):
             print(self.run_tests())
 
     def is_equal(self, other: Fish, simple_return=True) -> bool | tuple:
-        CapsuleFish.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
-
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
             truth_values.append(np.abs(self.roc_ax_t - other.get_rostro_caudal_semi_axis_tail()) < self.assert_err)
@@ -70,10 +66,7 @@ class CapsuleFish(IceCreamConeFish):
 
     def init_receptors_and_normals_random(self, receptors_init: dict) -> tuple[np.ndarray, np.ndarray]:
         """Similar to parent class, but with the addition of number of "tail" receptors provided in the input.
-        Parent __doc__:\n"""
-        CapsuleFish.init_receptors_and_normals_random.__doc__ = (
-            super().init_receptors_and_normals_random.__doc__  # type: ignore
-        )
+        See parent class "IceCreamConeFish" for more details."""
         # HEAD POINTS
         # construct unit radius semi-sphere with base on zy plane
         head_points_2D = np.random.rand(int(1.5 * receptors_init["head"]), 2) * 2 - 1
@@ -256,8 +249,7 @@ class CapsuleFish(IceCreamConeFish):
         return locations, normals
 
     def details(self):
-        """Provides the details of the CapsuleFish class. Parent __doc__:\n"""
-        CapsuleFish.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the CapsuleFish class. See parent class "IceCreamConeFish" for more details."""
 
         details_string = super().details()
         details_string += ("tail semi-axes: vertical %r, lateral %r, rostro-caudal %r (unit: meter)\n") % (
@@ -277,14 +269,10 @@ class CapsuleFish(IceCreamConeFish):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list:
-        CapsuleFish._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
-
         inp_args = super()._initialize_input_argument_names()
         inp_args += ["rostrocaudal_semi_axis_tail=None"]
         return inp_args
 
     def run_tests(self) -> str:
-        CapsuleFish.run_tests.__doc__ = super().run_tests.__doc__
-
         super().run_tests()
         return "Success!"
