@@ -294,17 +294,20 @@ class FishGeneration(Fish):
         Returns:
             tuple[np.ndarray, np.ndarray]: Tuple containing the transformed locations and normals.
         """
-        locations = receptors_init["locations"].copy()
-        normals = receptors_init["normals"].copy()
-        normals = normals / np.linalg.norm(normals, axis=1, keepdims=True)
-        assert locations.shape[1] == 3, "Fish points should be shape (N,3)."
-        assert normals.shape[1] == 3, "Fish normals should be shape (N,3)."
-        assert locations.shape[0] == normals.shape[0], "Number of points and normals should match."
-        assert (
-            (np.power(normals, 2).sum(1) - 1) < self.assert_err
-        ).all(), "Fish normals should be unit length vectors."
+        if len(receptors_init["locations"]):
+            locations = receptors_init["locations"].copy()
+            normals = receptors_init["normals"].copy()
+            normals = normals / np.linalg.norm(normals, axis=1, keepdims=True)
+            assert locations.shape[1] == 3, "Fish points should be shape (N,3)."
+            assert normals.shape[1] == 3, "Fish normals should be shape (N,3)."
+            assert locations.shape[0] == normals.shape[0], "Number of points and normals should match."
+            assert (
+                (np.power(normals, 2).sum(1) - 1) < self.assert_err
+            ).all(), "Fish normals should be unit length vectors."
 
-        return locations, normals
+            return locations, normals
+        else:
+            return np.array([[0.0, 0.0, 0.0]]), np.array([[0.0, 0.0, 1.0]])
 
     def bend_and_rigid_transform(
         self, locations_: np.ndarray, normals_: np.ndarray | None = None
