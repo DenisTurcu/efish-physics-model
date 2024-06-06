@@ -158,8 +158,8 @@ def generate_receptors_responses(
     dataset["worms"]["position_zs"] = worm_position_zs
 
     # prepare the electric images structure
-    dataset["electric_images"]["base"] = pd.DataFrame()  # dict(objs_ids=[], data=[], LEODs=[])
-    dataset["electric_images"]["pert"] = pd.DataFrame()  # dict(objs_ids=[])
+    dataset["electric_images"]["base"] = []
+    dataset["electric_images"]["pert"] = []
     dataset_electric_images_pert_data = []
     if save_LEODs:
         dataset_LEODs = []
@@ -280,7 +280,7 @@ def generate_receptors_responses(
         worm_list_df, columns=["resistances", "capacitances", "radii", "position_xs", "position_ys", "position_zs"]
     )
     dataset["worms"]["dataframe"]["objs"] = worm_objs
-    del aqua_list_df, fish_list_df, worm_list_df
+    # del aqua_list_df, fish_list_df, worm_list_df
     end_time = time.time()
     print(f"Time to prepare dataset: {end_time - start_time:.3f} s")
     print("Total aquarium-fish pairs: %d" % (len(dataset["fish"]["dataframe"]) * len(dataset["aquarium"]["dataframe"])))
@@ -331,14 +331,16 @@ def generate_receptors_responses(
                 ),
                 dtype=HDF5_save_dtype,
             )
-    for aqua_id, aqua_row in dataset["aquarium"]["dataframe"].iterrows():
+    # for aqua_id, aqua_row in dataset["aquarium"]["dataframe"].iterrows():
+    for aqua_id, aqua_row in enumerate(aqua_list_df):
         # identify the id of water conductivity
-        aquarium = aqua_row["objs"]
-        id_sig_water = aqua_row["conductivities"]
-        for fish_id, fish_row in dataset["fish"]["dataframe"].iterrows():
+        aquarium = aqua_objs[aqua_id]  # aqua_row["objs"]
+        id_sig_water = aqua_row[0]  # ["conductivities"]
+        # for fish_id, fish_row in dataset["fish"]["dataframe"].iterrows():
+        for fish_id, fish in enumerate(fish_objs):
             keeper_id += 1
-            print(f"ID: {str(keeper_id).rjust(3)}.", end=" ")
-            fish = fish_row["objs"]
+            print(f"ID: {str(keeper_id).rjust(3)}.")
+            # fish = fish_row["objs"]
             start_time = time.time()
             start_time_HDF5_save = start_time
             aquarium.insert_fish(fish)
@@ -368,21 +370,8 @@ def generate_receptors_responses(
                     num_samples=num_responses,
                 )
             num_responses += 1
-            dataset["electric_images"]["base"] = pd.concat(
-                [
-                    dataset["electric_images"]["base"],
-                    pd.DataFrame(
-                        dict(
-                            aqua_id=aqua_id,
-                            fish_id=fish_id,
-                            receptors_responses=(base_receptors_responses,),
-                            LEODs=None if not save_LEODs else (base_transdermal_signal,),
-                        ),
-                        index=[0],
-                    ),
-                ],
-                axis=0,
-                ignore_index=True,
+            dataset["electric_images"]["base"].append(
+                [aqua_id, fish_id, base_receptors_responses, None if not save_LEODs else (base_transdermal_signal,)]
             )
 
             # store the perturbation magnitudes for each 3D position (can change due
@@ -390,16 +379,17 @@ def generate_receptors_responses(
             #       - helps to avoid recomputing the perturbation magnitudes for each worm,
             #           generating the dataset faster
             dict_perturbation_magnitude = {}
-            for worm_id, worm_row in dataset["worms"]["dataframe"].iterrows():
+            # for worm_id, worm_row in dataset["worms"]["dataframe"].iterrows():
+            for worm_id, worm_row in enumerate(worm_list_df):
                 # identify the relevant ids for the worm
                 count_pert_EI += 1
-                worm = worm_row["objs"]
-                id_res = worm_row["resistances"]
-                id_cap = worm_row["capacitances"]
-                id_rad = worm_row["radii"]
-                id_pxs = worm_row["position_xs"]
-                id_pys = worm_row["position_ys"]
-                id_pzs = worm_row["position_zs"]
+                worm = worm_objs[worm_id]  # worm_row["objs"]
+                id_res = worm_row[0]  # ["resistances"]
+                id_cap = worm_row[1]  # ["capacitances"]
+                id_rad = worm_row[2]  # ["radii"]
+                id_pxs = worm_row[3]  # ["position_xs"]
+                id_pys = worm_row[4]  # ["position_ys"]
+                id_pzs = worm_row[5]  # ["position_zs"]
 
                 # indices for rad, R, C and water conductivity
                 #       these make up the keys of "dict_dipole_wave_forms"
@@ -461,21 +451,7 @@ def generate_receptors_responses(
                 pert_transdermal_signal = pert_transdermal_signal.cpu().numpy()
                 pert_receptors_responses = pert_receptors_responses.cpu().numpy()
 
-                dataset["electric_images"]["pert"] = pd.concat(
-                    [
-                        dataset["electric_images"]["pert"],
-                        pd.DataFrame(
-                            dict(
-                                aqua_id=aqua_id,
-                                fish_id=fish_id,
-                                worm_id=worm_id,
-                            ),
-                            index=[0],
-                        ),
-                    ],
-                    axis=0,
-                    ignore_index=True,
-                )
+                dataset["electric_images"]["pert"].append([aqua_id, fish_id, worm_id])
                 dataset_electric_images_pert_data.append(pert_receptors_responses)
 
                 expectation_receptor_responses, expectation_of_squared_receptors_responses = running_stream_computation(
@@ -503,23 +479,28 @@ def generate_receptors_responses(
 
                     if save_LEODs:
                         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "r+") as f:
-                            f["localEODs"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
+                            f["leods"][(count_pert_EI - HDF5_save_period) : count_pert_EI] = np.array(  # type: ignore # noqa E203
                                 dataset_LEODs
                             )
                         dataset_LEODs = []
                     end_time_HDF5_save = time.time()
                     print(
                         (
+                            "    "
                             f"Saved {count_pert_EI // HDF5_save_period}*{HDF5_save_period} EIs "
-                            f"({end_time_HDF5_save-start_time_HDF5_save:.2f} s)."
-                        ),
-                        end=" ",
+                            f"({((end_time_HDF5_save - start_time_HDF5_save) // 60):.0f}min "
+                            f"{((end_time_HDF5_save - start_time_HDF5_save) % 60):.2f}s)"
+                        )
                     )
                     start_time_HDF5_save = end_time_HDF5_save
 
             aquarium.remove_fish(fish)
             end_time = time.time()
-            print(f"Time: {(end_time-start_time):.2f} s.", end=" ")
+            print(
+                f"    Total time for ID {keeper_id}: {((end_time - start_time) // 60):.0f} min "
+                f"{((end_time - start_time) % 60):.2f} s."
+            )
+
             estimated_time_remaining = (
                 (end_time - main_start_time)
                 / keeper_id
@@ -527,13 +508,20 @@ def generate_receptors_responses(
             )
             estimated_datetime_finished = datetime.datetime.now() + datetime.timedelta(seconds=estimated_time_remaining)
             print(
+                "    "
                 "Estimated time remaining: "
-                f"{estimated_time_remaining // 3600} h "
-                f"{estimated_time_remaining % 3600 // 60} min "
+                f"{estimated_time_remaining // 3600:.0f} h "
+                f"{estimated_time_remaining % 3600 // 60:.0f} min "
                 f"{estimated_time_remaining % 60:.2f} s. "
                 "Estimated datetime finished: "
-                f"{estimated_datetime_finished.strftime('%Y_%m_%d-T-%H:%M:%S')}"
+                f"{estimated_datetime_finished.strftime('%Y_%m_%d-T-%H:%M:%S')}."
             )
+    dataset["electric_images"]["base"] = pd.DataFrame(
+        dataset["electric_images"]["base"], columns=["aqua_id", "fish_id", "responses", "leods"]
+    )
+    dataset["electric_images"]["pert"] = pd.DataFrame(
+        dataset["electric_images"]["pert"], columns=["aqua_id", "fish_id", "worm_id"]
+    )
 
     dataset["electric_images"]["responses_avg"] = expectation_receptor_responses
     dataset["electric_images"]["responses_std"] = np.sqrt(
@@ -551,7 +539,10 @@ def generate_receptors_responses(
             with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "r+") as f:
                 f["localEODs"][-len(dataset_LEODs) :] = np.array(dataset_LEODs)  # type: ignore # noqa E203
         end_time_HDF5_save = time.time()
-        print(f"({end_time_HDF5_save - start_time_HDF5_save:.2f} s)")
+        print(
+            f"({((end_time_HDF5_save - start_time_HDF5_save) // 60):.0f} min "
+            f"{((end_time_HDF5_save - start_time_HDF5_save) % 60):.2f} s)."
+        )
 
     print("Saving rest of data... ", end="")
     start_time = time.time()
@@ -559,7 +550,7 @@ def generate_receptors_responses(
         dataset["worms"]["dataframe"].drop(columns="objs", inplace=True)
     dill.dump(dataset, open(f"{save_folder}/{save_name}/dataset.pkl", "wb"), protocol=4)
     end_time = time.time()
-    print(f"({((end_time - start_time) // 60):.2f} min {((end_time - start_time) % 60):.2f} s)")
+    print(f"({((end_time - start_time) // 60):.0f} min {((end_time - start_time) % 60):.2f} s).")
     print("Done!")
     return dataset
 
