@@ -53,9 +53,8 @@ class Fish(ElectricObject):
                 multiple fish are present in the aquarium. Defaults to (0, "").
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
 
-        Parent __doc__:\n
+        See parent class "ElectricObject" for more details.
         """
-        Fish.__init__.__doc__ += super().__init__.__doc__  # type: ignore
 
         super().__init__(**kwds, _init_tests=False)
 
@@ -240,8 +239,7 @@ class Fish(ElectricObject):
         self.receptor_filters = new_receptor_filters
 
     def is_equal(self, other: Self, simple_return: bool = True) -> bool | tuple:
-        """Compare current fish to another fish for equality. Parent __doc__:\n"""
-        Fish.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
+        """Compare current fish to another fish for equality. See parent class "ElectricObject" for more details."""
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -485,8 +483,7 @@ class Fish(ElectricObject):
         )
 
     def details(self) -> str:
-        """Provides the details of the fish. Parent __doc__:\n"""
-        Fish.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the fish. See parent class "ElectricObject" for more details."""
 
         details_string = super().details()
         details_string += (
@@ -606,8 +603,6 @@ class Fish(ElectricObject):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list[str]:
-        Fish._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
-
         inp_args = super()._initialize_input_argument_names()
         inp_args += [
             "receptors_locations=np.array([]).reshape(0,3)",
@@ -623,8 +618,6 @@ class Fish(ElectricObject):
         return inp_args
 
     def run_tests(self) -> str:
-        Fish.run_tests.__doc__ = super().run_tests.__doc__
-
         super().run_tests()
         assert self.skin_rho == self.get_skin_resistivity(), "Fish skin resistivity does not match."
         assert self.sampling_rate == self.get_sampling_rate(), "Fish sampling rate does not match."

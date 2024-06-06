@@ -62,19 +62,19 @@ if __name__ == "__main__":
         print(f"Processing parameters dict: {fname}...")
 
         generate_receptors_responses(
-            save_name=params_dict["save_file_name"],
+            save_name=params_dict["save_name"],
             # aquarium properties
             water_conductivities=params_dict["water_conductivities"],
             boundary_displacements=params_dict["boundary_displacements"],
             boundary_normals=params_dict["boundary_normals"],
             # fish properties
             fish_obj=params_dict["fish_obj"],
-            fish_bend_angle_lateral_deg=params_dict["fish_bend_angle_lateral"],
-            fish_bend_angle_dorso_ventral_deg=params_dict["fish_bend_angle_dorso_ventral"],
+            fish_bend_angle_lateral_deg=params_dict["fish_bend_angle_lateral_deg"],
+            fish_bend_angle_dorso_ventral_deg=params_dict["fish_bend_angle_dorso_ventral_deg"],
             fish_bend_location_percentages=params_dict["fish_bend_location_percentages"],
-            fish_yaw_deg=params_dict["fish_yaw"],
-            fish_pitch_deg=params_dict["fish_pitch"],
-            fish_roll_deg=params_dict["fish_roll"],
+            fish_yaw_deg=params_dict["fish_yaw_deg"],
+            fish_pitch_deg=params_dict["fish_pitch_deg"],
+            fish_roll_deg=params_dict["fish_roll_deg"],
             # worm properties
             worm_resistances=params_dict["worm_resistances"],
             worm_capacitances=params_dict["worm_capacitances"],

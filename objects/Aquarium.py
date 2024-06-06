@@ -40,9 +40,8 @@ class Aquarium(ElectricObject):
                 element should be a tuple containing the boundary type and properties passed to that boundary type
                 for initialization (properties provided as dict). Defaults to [].
 
-        Parent __doc__:\n
+        See parent class "ElectricObject" for more details.
         """
-        Aquarium.__init__.__doc__ += super().__init__.__doc__  # type: ignore
 
         # initialize parent class properties
         super().__init__(**kwds, _init_tests=False)
@@ -961,8 +960,7 @@ class Aquarium(ElectricObject):
         return graph_obj
 
     def details(self):
-        """Provides the details of the aquarium. Parent __doc__:\n"""
-        Aquarium.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the aquarium. See parent class "ElectricObject" for more details."""
 
         details_string = super().details()
         details_string += f"This aquarium has boundaries {self.boundaries}.\n"
@@ -1005,7 +1003,6 @@ class Aquarium(ElectricObject):
 
     @classmethod
     def _initialize_input_argument_names(cls):
-        Aquarium._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
 
         inp_args = super()._initialize_input_argument_names()
         inp_args += [
@@ -1016,15 +1013,11 @@ class Aquarium(ElectricObject):
         return inp_args
 
     def run_tests(self) -> str:
-        Aquarium.run_tests.__doc__ = super().run_tests.__doc__
-
         super().run_tests()
-
         print(
             "Testing Aquarium class... Testing fish and worm insertion and removal. "
             "Expect to see text that 'object already exists' and 'object does not exist'."
         )
-
         with open(os.devnull, "w") as f, contextlib.redirect_stdout(f):
             fish1 = FishGeneration(
                 nose_position=[0, 1, 0], fish_length=0.5, eod_wave_form=np.zeros(100), skin_resistivity=1

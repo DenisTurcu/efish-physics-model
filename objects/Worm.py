@@ -22,10 +22,8 @@ class Worm(ElectricObject):
                 Defaults to [0, 0, 0].
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
 
-        Parent __doc__:\n
+        See parent class "ElectricObject" for more details.
         """
-        Worm.__init__.__doc__ += super().__init__.__doc__  # type: ignore
-
         super().__init__(**kwds, _init_tests=False)
         self.r_vec = np.array(convert2mainSI(center_position))  # type: ignore
         self._initialize_input_argument_names()
@@ -34,8 +32,7 @@ class Worm(ElectricObject):
             print(self.run_tests())
 
     def is_equal(self, other: Self, simple_return: bool = True) -> bool | tuple:
-        """Compare current worm to another worm for equality. Parent __doc__:\n"""
-        Worm.is_equal.__doc__ += super().is_equal.__doc__  # type: ignore
+        """Compare current worm to another worm for equality. See parent class "ElectricObject" for more details."""
 
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
@@ -55,8 +52,7 @@ class Worm(ElectricObject):
         )
 
     def details(self) -> str:
-        """Provides the details of the worm. Parent __doc__:\n"""
-        Worm.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the worm. See parent class "ElectricObject" for more details."""
 
         details_string = super().details()
         details_string += f"This worm has center position {self.r_vec}.\n"
@@ -81,15 +77,11 @@ class Worm(ElectricObject):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list[str]:
-        Worm._initialize_input_argument_names.__func__.__doc__ = super()._initialize_input_argument_names.__doc__
-
         inp_args = super()._initialize_input_argument_names()
         inp_args += ["center_position=[0,0,0]"]
         return inp_args
 
     def run_tests(self):
-        Worm.run_tests.__doc__ = super().run_tests.__doc__
-
         super().run_tests()
         assert (self.r_vec == self.get_position()).all(), "Worm position does not match."
         return "Success!"

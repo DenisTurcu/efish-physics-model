@@ -38,9 +38,8 @@ class IceCreamConeFish(FishGeneration):
             _init_tests (bool, optional): Run init tests or not. Defaults to True.
             _super_init (bool, optional): Whether the super was initialized or not. Defaults to False.
 
-        Parent __doc__:\n
+        See parent class "FishGeneration" for more details.
         """
-        IceCreamConeFish.__init__.__doc__ += super().__init__.__doc__  # type: ignore
 
         super().__init__(**kwds, _init_tests=False)
 
@@ -59,8 +58,6 @@ class IceCreamConeFish(FishGeneration):
             print(self.run_tests())
 
     def is_equal(self, other: Fish, simple_return: bool = True):
-        IceCreamConeFish.is_equal.__doc__ = super().is_equal.__doc__  # type: ignore
-
         _, truth_values, comparison = super().is_equal(other, simple_return=False)  # type: ignore
         if isinstance(other, self.__class__):
             truth_values.append(np.abs(self.ver_ax - other.get_vertical_semi_axis()) < self.assert_err)
@@ -139,8 +136,7 @@ class IceCreamConeFish(FishGeneration):
         return locations, normals
 
     def details(self) -> str:
-        """Provides the details of the IceCreamConeFish class. Parent __doc__:\n"""
-        IceCreamConeFish.details.__doc__ += super().details.__doc__  # type: ignore
+        """Provides the details of the IceCreamConeFish class. See parent class "FishGeneration" for more details."""
 
         details_string = super().details()
         details_string += (
@@ -175,15 +171,10 @@ class IceCreamConeFish(FishGeneration):
 
     @classmethod
     def _initialize_input_argument_names(cls) -> list:
-        IceCreamConeFish._initialize_input_argument_names.__func__.__doc__ = (
-            super()._initialize_input_argument_names.__doc__
-        )
         inp_args = super()._initialize_input_argument_names()
         inp_args += ["vertical_semi_axis", "lateral_semi_axis=None", "rostrocaudal_semi_axis=None"]
         return inp_args
 
     def run_tests(self) -> str:
-        IceCreamConeFish.run_tests.__doc__ = super().run_tests.__doc__
-
         super().run_tests()
         return "Success!"
