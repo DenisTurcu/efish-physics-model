@@ -153,7 +153,7 @@ class FishGeneration(Fish):
             point_currents_magnitude_scale (float | None, optional): New value to update, if provided. Defaults to None.
         """
         # receptors parameters
-        self.nose_position = self.nose_position if nose_position is None else nose_position
+        self.nose_position = self.nose_position if nose_position is None else convert2mainSI(nose_position)
 
         # rotation parameters
         self.yaw = self.yaw if angle_yaw is None else convert2mainSI(angle_yaw)
