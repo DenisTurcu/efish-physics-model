@@ -177,7 +177,6 @@ class CapsuleFish(IceCreamConeFish):
                 grid_like=dict(N_points_t=N_receptors["head_t"] + 1, N_points_u=N_receptors["head_u"])
             )
             head_points = head_points.reshape(3, -1).T
-            head_points = head_points[: -(head_points.shape[0] // (N_receptors["head_t"] + 1))]
             locations = np.vstack([locations, head_points])
 
             # NORMALS
@@ -198,7 +197,6 @@ class CapsuleFish(IceCreamConeFish):
                 grid_like=dict(N_points_t=N_receptors["tail_t"] + 1, N_points_u=N_receptors["tail_u"])
             )
             tail_points = tail_points.reshape(3, -1).T
-            tail_points = tail_points[: -(tail_points.shape[0] // (N_receptors["tail_t"] + 1))]
             tail_points[:, 0] -= self.length - self.roc_ax - self.roc_ax_t
             locations = np.vstack([locations, tail_points])
 
@@ -221,10 +219,9 @@ class CapsuleFish(IceCreamConeFish):
                 *domain_u_cylinder,
                 100,  # type: ignore
                 100,  # type: ignore
-                grid_like=dict(N_points_t=N_receptors["body_t"] + 1, N_points_u=N_receptors["body_u"] + 1)
+                grid_like=dict(N_points_t=N_receptors["body_t"] + 1, N_points_u=N_receptors["body_u"])
             )
             body_points = body_points.reshape(3, -1).T
-            body_points = body_points[: -(body_points.shape[0] // (N_receptors["body_u"] + 1))]
             locations = np.vstack([locations, body_points])
 
             # NORMALS

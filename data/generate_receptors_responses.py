@@ -168,20 +168,17 @@ def generate_receptors_responses(
     # Create the Object Lists ##################################################################################
     ############################################################################################################
     # create the aquarium objects
-    list_df = []
+    aqua_list_df = []
     for i0 in range(len(dataset["aquarium"]["conductivities"])):
         for i1 in range(len(dataset["aquarium"]["boundary_normals"])):
             # get at least one displacement for the boundary normal to be able to create the aquarium object
             for i2 in range(max(len(dataset["aquarium"]["boundary_displacements"][i1]), 1)):
-                list_df.append([i0, i1, i2])
-    dataset["aquarium"]["dataframe"] = pd.DataFrame(
-        list_df, columns=["conductivities", "boundary_normals", "boundary_displacements"]
-    )
+                aqua_list_df.append([i0, i1, i2])
     aqua_objs = []
-    for _, row in dataset["aquarium"]["dataframe"].iterrows():
-        id_cond = row["conductivities"]
-        id_norm = row["boundary_normals"]
-        id_disp = row["boundary_displacements"]
+    for row in aqua_list_df:
+        id_cond = row[0]  # ["conductivities"]
+        id_norm = row[1]  # ["boundary_normals"]
+        id_disp = row[2]  # ["boundary_displacements"]
         if (not dataset["aquarium"]["boundary_displacements"][id_norm]) or np.abs(
             dataset["aquarium"]["boundary_displacements"][id_norm][id_disp]
         ) > 1:
@@ -203,10 +200,13 @@ def generate_receptors_responses(
                     _init_tests=False,
                 )
             )
+    dataset["aquarium"]["dataframe"] = pd.DataFrame(
+        aqua_list_df, columns=["conductivities", "boundary_normals", "boundary_displacements"]
+    )
     dataset["aquarium"]["dataframe"]["objs"] = aqua_objs
 
     # create the fish objects
-    list_df = []
+    fish_list_df = []
     for i0, temp0 in enumerate(dataset["fish"]["bend_angle_lateral"]):
         for i1, temp1 in enumerate(dataset["fish"]["bend_angle_dorso_ventral"]):
             for i2, temp2 in enumerate(dataset["fish"]["bend_location_percentages"]):
@@ -215,25 +215,21 @@ def generate_receptors_responses(
                     for i3 in range(len(dataset["fish"]["yaw"])):
                         for i4 in range(len(dataset["fish"]["pitch"])):
                             for i5 in range(len(dataset["fish"]["roll"])):
-                                list_df.append([i0, i1, i2, i3, i4, i5])
+                                fish_list_df.append([i0, i1, i2, i3, i4, i5])
                 else:
                     print(
                         f"Fish bend details {i0}, {i1}, {i2} have different lengths: "
                         f"{len(temp0)}, {len(temp1)}, {len(temp2)}. Skipping..."
                     )
-    dataset["fish"]["dataframe"] = pd.DataFrame(
-        list_df,
-        columns=["bend_angle_lateral", "bend_angle_dorso_ventral", "bend_location_percentages", "yaw", "pitch", "roll"],
-    )
     fish_objs = []
-    for _, row in dataset["fish"]["dataframe"].iterrows():
+    for row in fish_list_df:
         temp_fish = copy.deepcopy(fish_obj)
-        id_lat = row["bend_angle_lateral"]
-        id_dve = row["bend_angle_dorso_ventral"]
-        id_loc = row["bend_location_percentages"]
-        id_yaw = row["yaw"]
-        id_pit = row["pitch"]
-        id_rol = row["roll"]
+        id_lat = row[0]  # ["bend_angle_lateral"]
+        id_dve = row[1]  # ["bend_angle_dorso_ventral"]
+        id_loc = row[2]  # ["bend_location_percentages"]
+        id_yaw = row[3]  # ["yaw"]
+        id_pit = row[4]  # ["pitch"]
+        id_rol = row[5]  # ["roll"]
         temp_fish.update_parameters(
             nose_position=None,
             angle_yaw=(dataset["fish"]["yaw"][id_yaw], "deg"),
@@ -244,28 +240,29 @@ def generate_receptors_responses(
             relative_bend_angle_dorso_ventral=(np.array(dataset["fish"]["bend_angle_dorso_ventral"][id_dve]), "deg"),
         )
         fish_objs.append(temp_fish)
+    dataset["fish"]["dataframe"] = pd.DataFrame(
+        fish_list_df,
+        columns=["bend_angle_lateral", "bend_angle_dorso_ventral", "bend_location_percentages", "yaw", "pitch", "roll"],
+    )
     dataset["fish"]["dataframe"]["objs"] = fish_objs
 
     # create the worm obj list
-    list_df = []
+    worm_list_df = []
     for i0 in range(len(dataset["worms"]["resistances"])):
         for i1 in range(len(dataset["worms"]["capacitances"])):
             for i2 in range(len(dataset["worms"]["radii"])):
                 for i3 in range(len(dataset["worms"]["position_xs"])):
                     for i4 in range(len(dataset["worms"]["position_ys"])):
                         for i5 in range(len(dataset["worms"]["position_zs"])):
-                            list_df.append([i0, i1, i2, i3, i4, i5])
-    dataset["worms"]["dataframe"] = pd.DataFrame(
-        list_df, columns=["resistances", "capacitances", "radii", "position_xs", "position_ys", "position_zs"]
-    )
+                            worm_list_df.append([i0, i1, i2, i3, i4, i5])
     worm_objs = []
-    for _, row in dataset["worms"]["dataframe"].iterrows():
-        id_res = row["resistances"]
-        id_cap = row["capacitances"]
-        id_rad = row["radii"]
-        id_pxs = row["position_xs"]
-        id_pys = row["position_ys"]
-        id_pzs = row["position_zs"]
+    for row in worm_list_df:
+        id_res = row[0]  # ["resistances"]
+        id_cap = row[1]  # ["capacitances"]
+        id_rad = row[2]  # ["radii"]
+        id_pxs = row[3]  # ["position_xs"]
+        id_pys = row[4]  # ["position_ys"]
+        id_pzs = row[5]  # ["position_zs"]
         worm_objs.append(
             SmallSphericalWorm(
                 radius=dataset["worms"]["radii"][id_rad],  # type: ignore
@@ -279,7 +276,11 @@ def generate_receptors_responses(
                 _init_tests=False,
             )
         )
+    dataset["worms"]["dataframe"] = pd.DataFrame(
+        worm_list_df, columns=["resistances", "capacitances", "radii", "position_xs", "position_ys", "position_zs"]
+    )
     dataset["worms"]["dataframe"]["objs"] = worm_objs
+    del aqua_list_df, fish_list_df, worm_list_df
     end_time = time.time()
     print(f"Time to prepare dataset: {end_time - start_time:.3f} s")
     print("Total aquarium-fish pairs: %d" % (len(dataset["fish"]["dataframe"]) * len(dataset["aquarium"]["dataframe"])))

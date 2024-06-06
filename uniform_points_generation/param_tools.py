@@ -320,7 +320,7 @@ def r_surface_from_data(n, t, u, coords, interp=True, kind="linear", grid_like=F
 
     if grid_like:
         points_S_t, points_S_u = np.meshgrid(
-            np.linspace(0, cum_S_t[-1], grid_like["N_points_t"]),  # type: ignore
+            np.linspace(0, cum_S_t[-1], grid_like["N_points_t"])[:-1],  # type: ignore
             np.linspace(0, cum_S_u[-1], grid_like["N_points_u"]),  # type: ignore
         )  # type: ignore
         N_points = grid_like["N_points_t"] * grid_like["N_points_u"]  # type: ignore
