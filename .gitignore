@@ -163,6 +163,7 @@ cython_debug/
 .DS_store
 *.pkl
 *.hdf5
+*.txt
 
 *.png
 *.svg
