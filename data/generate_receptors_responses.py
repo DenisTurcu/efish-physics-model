@@ -321,7 +321,7 @@ def generate_receptors_responses(
     if save_LEODs:
         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "w") as f:
             f.create_dataset(
-                "localEODs",
+                "leods",
                 (
                     len(dataset["fish"]["dataframe"])
                     * len(dataset["aquarium"]["dataframe"])
@@ -537,7 +537,7 @@ def generate_receptors_responses(
             f["responses"][-len(dataset_electric_images_pert_data) :] = np.array(dataset_electric_images_pert_data)  # type: ignore # noqa E203
         if save_LEODs:
             with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "r+") as f:
-                f["localEODs"][-len(dataset_LEODs) :] = np.array(dataset_LEODs)  # type: ignore # noqa E203
+                f["leods"][-len(dataset_LEODs) :] = np.array(dataset_LEODs)  # type: ignore # noqa E203
         end_time_HDF5_save = time.time()
         print(
             f"({((end_time_HDF5_save - start_time_HDF5_save) // 60):.0f} min "
