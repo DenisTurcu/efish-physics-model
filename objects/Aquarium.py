@@ -485,6 +485,8 @@ class Aquarium(ElectricObject):
         time_points: int | list | tuple = 10,
         shown_time_prefix: str = "",
         range_points: int = 30,
+        min_ranges: np.ndarray | None = None,
+        max_ranges: np.ndarray | None = None,
         lengths_prefix: str = "",
         show_fish: int = 0,
         show_electric_signal: bool = False,
@@ -528,6 +530,8 @@ class Aquarium(ElectricObject):
             shown_time_prefix (str, optional): Whether or not to show the time prefix on the plot. Defaults to "".
             range_points (int, optional): Number of mesh-grid points in each dimension to use for generating
                 the mesh-grid. Defaults to 30.
+            min_ranges (np.ndarray, optional): Minimum ranges for the aquarium (x,y,z). Defaults to None.
+            max_ranges (np.ndarray, optional): Maximum ranges for the aquarium (x,y,z). Defaults to None.
             lengths_prefix (str, optional): Prefixes of the spatial variables shown in the visualization,
                 e.g. "c" for centimeter. Defaults to "".
             show_fish (int, optional): Whether to show the fish receptors in the visualization. Magnitude dictates
@@ -581,13 +585,15 @@ class Aquarium(ElectricObject):
             points = np.vstack([points, fish.get_receptors_locations()])  # type: ignore
         for worm in self.worm_objs:
             points = np.vstack([points, worm.get_position()])  # type: ignore
-        min_ranges = points.min(0)
-        max_ranges = points.max(0)
-        # del_ranges = max_ranges - min_ranges
-        # min_ranges = min_ranges - del_ranges/2
-        # max_ranges = max_ranges + del_ranges/2
-        min_ranges = np.array([-15, -10, -10]) / 100
-        max_ranges = np.array([5, 10, 10]) / 100
+        del_ranges = points.max(0) - points.min(0)
+        if min_ranges is None:
+            min_ranges = points.min(0) - del_ranges / 2
+        else:
+            min_ranges = convert2mainSI(min_ranges)  # type: ignore
+        if max_ranges is None:
+            max_ranges = points.max(0) + del_ranges / 2
+        else:
+            max_ranges = convert2mainSI(max_ranges)  # type: ignore
 
         ########################################################################
         # determine the frame times for the animation
@@ -725,7 +731,7 @@ class Aquarium(ElectricObject):
                     y=add_prefix(Y, lengths_prefix),
                     z=add_prefix(Z, lengths_prefix),
                     value=potential_final[:, i],
-                    opacity=0.3,
+                    opacity=0.2,
                     surface_count=10,
                     showscale=False,
                     colorscale="Picnic",
