@@ -280,7 +280,6 @@ def generate_receptors_responses(
         worm_list_df, columns=["resistances", "capacitances", "radii", "position_xs", "position_ys", "position_zs"]
     )
     dataset["worms"]["dataframe"]["objs"] = worm_objs
-    # del aqua_list_df, fish_list_df, worm_list_df
     end_time = time.time()
     print(f"Time to prepare dataset: {end_time - start_time:.3f} s")
     print("Total aquarium-fish pairs: %d" % (len(dataset["fish"]["dataframe"]) * len(dataset["aquarium"]["dataframe"])))
@@ -487,7 +486,7 @@ def generate_receptors_responses(
                     print(
                         (
                             "    "
-                            f"Saved {count_pert_EI // HDF5_save_period}*{HDF5_save_period} EIs "
+                            f"Saved {count_pert_EI // HDF5_save_period} * {HDF5_save_period} EIs "
                             f"({((end_time_HDF5_save - start_time_HDF5_save) // 60):.0f}min "
                             f"{((end_time_HDF5_save - start_time_HDF5_save) % 60):.2f}s)"
                         )
@@ -516,6 +515,11 @@ def generate_receptors_responses(
                 "Estimated datetime finished: "
                 f"{estimated_datetime_finished.strftime('%Y_%m_%d-T-%H:%M:%S')}."
             )
+
+    del aqua_list_df, fish_list_df, worm_list_df
+    if not save_worm_objs:
+        dataset["worms"]["dataframe"].drop(columns="objs", inplace=True)
+
     dataset["electric_images"]["base"] = pd.DataFrame(
         dataset["electric_images"]["base"], columns=["aqua_id", "fish_id", "responses", "leods"]
     )
@@ -546,8 +550,6 @@ def generate_receptors_responses(
 
     print("Saving rest of data... ", end="")
     start_time = time.time()
-    if not save_worm_objs:
-        dataset["worms"]["dataframe"].drop(columns="objs", inplace=True)
     dill.dump(dataset, open(f"{save_folder}/{save_name}/dataset.pkl", "wb"), protocol=4)
     end_time = time.time()
     print(f"({((end_time - start_time) // 60):.0f} min {((end_time - start_time) % 60):.2f} s).")
