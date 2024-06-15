@@ -308,7 +308,7 @@ def generate_receptors_responses(
     with h5py.File(f"{save_folder}/{save_name}/responses.hdf5", "w") as f:
         f.create_dataset(
             "responses",
-            (
+            shape=(
                 len(dataset["fish"]["dataframe"])
                 * len(dataset["aquarium"]["dataframe"])
                 * len(dataset["worms"]["dataframe"]),
@@ -316,12 +316,13 @@ def generate_receptors_responses(
                 fish_obj.get_N_filters(),
             ),
             dtype=HDF5_save_dtype,
+            chunks=(1, fish_obj.get_N_receptors(), fish_obj.get_N_filters()),
         )
     if save_LEODs:
         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "w") as f:
             f.create_dataset(
                 "leods",
-                (
+                shape=(
                     len(dataset["fish"]["dataframe"])
                     * len(dataset["aquarium"]["dataframe"])
                     * len(dataset["worms"]["dataframe"]),
@@ -329,6 +330,7 @@ def generate_receptors_responses(
                     fish_obj.eod_length,
                 ),
                 dtype=HDF5_save_dtype,
+                chunks=(1, fish_obj.get_N_receptors(), fish_obj.eod_length),
             )
     # for aqua_id, aqua_row in dataset["aquarium"]["dataframe"].iterrows():
     for aqua_id, aqua_row in enumerate(aqua_list_df):
