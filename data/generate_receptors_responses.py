@@ -305,32 +305,31 @@ def generate_receptors_responses(
     keeper_id = 0  # id that keeps track of the current aquarium-fish pair (ignoring the worm)
     count_pert_EI = 0  # id that keeps track of the current aquarium-fish-worm group
     num_responses = 0  # id that keeps track of the number of responses computed (base and pert)
+    dataset_length = (
+        len(dataset["fish"]["dataframe"]) * len(dataset["aquarium"]["dataframe"]) * len(dataset["worms"]["dataframe"])
+    )
     with h5py.File(f"{save_folder}/{save_name}/responses.hdf5", "w") as f:
         f.create_dataset(
             "responses",
             shape=(
-                len(dataset["fish"]["dataframe"])
-                * len(dataset["aquarium"]["dataframe"])
-                * len(dataset["worms"]["dataframe"]),
+                dataset_length,
                 fish_obj.get_N_receptors(),
                 fish_obj.get_N_filters(),
             ),
             dtype=HDF5_save_dtype,
-            chunks=(1, fish_obj.get_N_receptors(), fish_obj.get_N_filters()),
+            chunks=(int(np.sqrt(dataset_length)), fish_obj.get_N_receptors(), fish_obj.get_N_filters()),
         )
     if save_LEODs:
         with h5py.File(f"{save_folder}/{save_name}/leods.hdf5", "w") as f:
             f.create_dataset(
                 "leods",
                 shape=(
-                    len(dataset["fish"]["dataframe"])
-                    * len(dataset["aquarium"]["dataframe"])
-                    * len(dataset["worms"]["dataframe"]),
+                    dataset_length,
                     fish_obj.get_N_receptors(),
                     fish_obj.eod_length,
                 ),
                 dtype=HDF5_save_dtype,
-                chunks=(1, fish_obj.get_N_receptors(), fish_obj.eod_length),
+                chunks=(int(np.sqrt(dataset_length)), fish_obj.get_N_receptors(), fish_obj.eod_length),
             )
     # for aqua_id, aqua_row in dataset["aquarium"]["dataframe"].iterrows():
     for aqua_id, aqua_row in enumerate(aqua_list_df):
