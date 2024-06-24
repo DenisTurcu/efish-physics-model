@@ -311,7 +311,7 @@ class Fish(ElectricObject):
                 self.create_normals_graph_obj(size_scale=show_normals, units_prefix=units_prefix)
             )
 
-        intensity_range = None if intensity is None else [intensity.min(), intensity.max()]
+        intensity_range = None if intensity is None else [-np.abs(intensity).max(), np.abs(intensity).max()]
         fig.add_trace(  # type: ignore
             self.create_scatter_graph_obj(
                 intensity=intensity,
