@@ -731,7 +731,7 @@ class Aquarium(ElectricObject):
                     y=add_prefix(Y, lengths_prefix),
                     z=add_prefix(Z, lengths_prefix),
                     value=potential_final[:, i],
-                    opacity=0.2,
+                    opacity=0.1,
                     surface_count=10,
                     showscale=False,
                     colorscale="Picnic",
